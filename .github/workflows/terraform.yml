@@ -1,0 +1,37 @@
+name: Terraform CI with Comment
+
+on:
+  pull_request:
+
+jobs:
+  terraform:
+    name: Terraform PR Plan
+    runs-on: ubuntu-latest
+
+    defaults:
+      run:
+        working-directory: ./envs/dev
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+
+      - name: Terraform Init
+        run: terraform init -input=false
+
+      - name: Terraform Plan
+        id: plan
+        run: |
+          terraform plan -no-color -input=false > tfplan.txt
+          cat tfplan.txt
+
+      - name: Comment PR with Plan Output
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: envs/dev/tfplan.txt
+
