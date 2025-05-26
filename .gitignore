@@ -1,0 +1,7 @@
+# .gitignore 내용
+.terraform/
+*.tfstate
+*.tfstate.*
+terraform.tfvars
+.crc
+.terraform.lock.hcl
