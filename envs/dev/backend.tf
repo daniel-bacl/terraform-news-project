@@ -3,6 +3,8 @@ terraform {
     bucket         = "soldesk-news-project-bk"
     key            = "env/dev/terraform.tfstate"
     region         = "ap-northeast-2"
-    use_lock_table = true
+    dynamodb_table = "terraform-lock" # DynamoDB 테이블은 직접 만들어야 함
+    encrypt        = true
   }
 }
+
