@@ -2,7 +2,7 @@ name: Terraform CI with Comment
 
 on:
   pull_request:
-  push:
+    types: [opened, synchronize]
 
 permissions:
   pull-requests: write
