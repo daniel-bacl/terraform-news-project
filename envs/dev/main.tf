@@ -19,7 +19,4 @@ module "route" {
   public_subnet_ids  = module.subnet.public_subnet_ids
 }
 
-module "s3_backend" {
-  source = "../../modules/bootstrap/s3-backend"
-}
 
