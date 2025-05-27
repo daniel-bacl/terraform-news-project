@@ -19,4 +19,14 @@ module "route" {
   public_subnet_ids  = module.subnet.public_subnet_ids
 }
 
+module "eks_roles" {
+  source = "../../modules/iam"
+}
 
+module "eks" {
+  source         = "../../modules/eks"
+  cluster_name   = "news-cluster"
+  subnet_ids     = module.subnet.private_subnet_ids
+  eks_role_arn   = module.eks_roles.eks_cluster_role_arn
+  node_role_arn  = module.eks_roles.eks_node_role_arn
+}
