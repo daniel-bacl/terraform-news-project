@@ -22,6 +22,7 @@ module "route" {
   vpc_id             = module.vpc.vpc_id
   igw_id             = module.igw.igw_id
   public_subnet_ids  = module.subnet.public_subnet_ids
+  private_subnet_ids = module.subnet.private_subnet_ids
   nat_gateway_id     = module.nat.nat_gateway_id
 }
 
