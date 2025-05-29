@@ -13,8 +13,8 @@ module "igw" {
 }
 
 module "nat" {
-  source            = "../../modules/networking/nat"
-  public_subnet_id  = module.subnet.public_subnet_ids[0]
+  source           = "../../modules/networking/nat"
+  public_subnet_id = module.subnet.public_subnet_ids[0]
 }
 
 module "route" {
@@ -31,22 +31,26 @@ module "eks_roles" {
 }
 
 module "eks" {
-  source         = "../../modules/eks"
-  cluster_name   = "news-cluster"
-  subnet_ids     = module.subnet.private_subnet_ids
-  eks_role_arn   = module.eks_roles.eks_cluster_role_arn
-  node_role_arn  = module.eks_roles.eks_node_role_arn
+  source        = "../../modules/eks"
+  cluster_name  = "news-cluster"
+  subnet_ids    = module.subnet.private_subnet_ids
+  eks_role_arn  = module.eks_roles.eks_cluster_role_arn
+  node_role_arn = module.eks_roles.eks_node_role_arn
+}
 
 module "lambda_layer" {
-  source = "../../modules/lambda/layer"
-
+  source     = "../../modules/lambda/layer"
   layer_name = "news-layer"
 }
 
-module "lambda_function" {
-  source = "../../modules/lambda/function"
+module "lambda_exec_role" {
+  source    = "../../modules/iam/lambda_exec_role"
+  role_name = "lambda-exec-role"
+}
 
-  function_name = "send-news-email"
+module "lambda_function" {
+  source        = "../../modules/lambda/function"
+  lambda_function_name = "send-news-email"
   role_arn      = module.lambda_exec_role.role_arn
   layer_arn     = module.lambda_layer.layer_arn
 
@@ -57,9 +61,4 @@ module "lambda_function" {
     DB_NAME     = var.db_name
     SES_SENDER  = var.ses_sender
   }
-}
-
-module "lambda_exec_role" {
-  source    = "../../modules/iam/lambda_exec_role"
-  role_name = "lambda-exec-role"
 }

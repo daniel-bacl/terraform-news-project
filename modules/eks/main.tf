@@ -6,7 +6,12 @@ resource "aws_eks_cluster" "this" {
     subnet_ids = var.subnet_ids
   }
 
-  enabled_cluster_log_types = ["api", "authenticator", "controllerManager", "scheduler"]
+  enabled_cluster_log_types = [
+    "api",
+    "authenticator",
+    "controllerManager",
+    "scheduler"
+  ]
 
   tags = {
     Name = var.cluster_name
@@ -31,4 +36,3 @@ resource "aws_eks_node_group" "default" {
     Name = "${var.cluster_name}-ng"
   }
 }
-

@@ -2,7 +2,7 @@
 
 variable "db_host" {
   type    = string
-  default = "your-rds-endpoint.rds.amazonaws.com"
+  default = "newssubscribe.cb0ueo6m8a54.ap-northeast-2.rds.amazonaws.com"
 }
 
 variable "db_user" {
