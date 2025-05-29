@@ -65,6 +65,7 @@ module "lambda_sql_initializer" {
   private_subnet_ids       = module.subnet.private_subnet_ids
   lambda_security_group_id = module.security_group.app_sg_id
   lambda_role_arn          = module.iam.lambda_role_arn
+  depends_on = [module.rds]
 }
 
 

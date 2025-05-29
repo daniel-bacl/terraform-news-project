@@ -7,7 +7,7 @@ variable "db_user" {
 }
 
 variable "db_password" {
-  type = string
+  type      = string
   sensitive = true
 }
 
@@ -16,10 +16,9 @@ variable "db_name" {
 }
 
 variable "db_port" {
-  type = number
+  type    = number
   default = 3306
 }
-
 
 variable "private_subnet_ids" {
   type = list(string)

@@ -21,4 +21,9 @@ resource "aws_lambda_function" "sql_initializer" {
       DB_PORT     = var.db_port
     }
   }
+
+  vpc_config {
+    subnet_ids         = var.private_subnet_ids
+    security_group_ids = [var.lambda_security_group_id]
+  }
 }

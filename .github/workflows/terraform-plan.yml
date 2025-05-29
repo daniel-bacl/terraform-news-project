@@ -1,0 +1,43 @@
+name: Terraform Plan
+
+on:
+  pull_request:
+    types: [opened, synchronize]
+
+permissions:
+  pull-requests: write
+
+jobs:
+  plan:
+    name: Terraform Plan
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: ./envs/dev
+
+    steps:
+      - uses: actions/checkout@v4
+      - uses: hashicorp/setup-terraform@v3
+        with:
+          terraform_version: 1.12.1
+
+      - name: Generate tfvars from secrets
+        run: |
+          echo 'db_password = "${{ secrets.DB_PASSWORD }}"' > terraform.auto.tfvars
+
+      - name: Terraform Init
+        run: terraform init -input=false
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Terraform Plan
+        run: terraform plan -no-color -input=false > tfplan.txt
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Comment PR with Plan
+        uses: marocchino/sticky-pull-request-comment@v2
+        with:
+          path: envs/dev/tfplan.txt
