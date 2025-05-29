@@ -24,6 +24,10 @@ jobs:
         with:
           terraform_version: 1.12.1
 
+      - name: Generate tfvars from secrets
+        run: |
+          echo 'db_password = "${{ secrets.DB_PASSWORD }}"' > terraform.auto.tfvars
+
       - name: Terraform Init
         run: terraform init -input=false
         env:
@@ -55,6 +59,10 @@ jobs:
         with:
           terraform_version: 1.12.1
 
+      - name: Generate tfvars from secrets
+        run: |
+          echo 'db_password = "${{ secrets.DB_PASSWORD }}"' > terraform.auto.tfvars
+
       - name: Terraform Init
         run: terraform init -reconfigure -input=false
         env:
@@ -67,3 +75,10 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Invoke Lambda to initialize DB
+        run: |
+          aws lambda invoke \
+            --function-name init-db \
+            --payload '{}' \
+            --region ap-northeast-2 \
+            init-db-response.json
