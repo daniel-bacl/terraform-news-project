@@ -55,8 +55,30 @@ jobs:
         with:
           terraform_version: 1.12.1
 
+      ############################################
+      # ✅ Lambda zip 자동 생성 파트 추가 시작
+      ############################################
+
+      - name: Install zip utility
+        run: sudo apt-get install -y zip   # zip 설치
+
+      - name: Package Lambda Function
+        run: |
+          cd modules/lambda/function
+          zip -r ../../../lambda_function.zip lambda_function.py   # zip 생성
+
+      - name: Build Lambda Layer
+        run: |
+          cd modules/lambda/layer
+          chmod +x build.sh
+          ./build.sh   # requirements.txt 기반 zip 생성
+
+      ############################################
+      # ✅ Lambda zip 자동 생성 파트 추가 끝
+      ############################################
+
       - name: Terraform Init
-        run: terraform init -input=false
+        run: terraform init -reconfigure -input=false
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}

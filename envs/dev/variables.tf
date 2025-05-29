@@ -1,1 +1,32 @@
 // 변수 정의는 필요 시 여기에 추가하세요.
+
+variable "db_host" {
+  type    = string
+  default = "your-rds-endpoint.rds.amazonaws.com"
+}
+
+variable "db_user" {
+  type    = string
+  default = "root"
+}
+
+variable "db_password" {
+  type    = string
+  default = "soldesk12!"
+}
+
+variable "db_name" {
+  type    = string
+  default = "NewsSubscribe"
+}
+
+variable "db_charset" {
+  type    = string
+  default = "utf8mb4"
+}
+
+variable "ses_sender" {
+  type    = string
+  default = "News_send@sol-dni.click"
+}
+

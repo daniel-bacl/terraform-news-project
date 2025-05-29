@@ -5,3 +5,19 @@
 terraform.tfvars
 .crc
 .terraform.lock.hcl
+
+# Lambda 빌드 결과 무시
+zip/  # 별도 zip 디렉토리 관리 중이면 유지
+
+# Lambda Layer
+lambda/layer/python/
+!lambda/layer/requirements.txt
+lambda/layer/lambda_layer.zip     # ✅ 명시적으로 무시 (Terraform 경로에 둘 경우)
+
+# Lambda Function
+lambda/function/__pycache__/
+lambda/function/lambda_function.zip  # ✅ 명시적으로 무시
+
+# Python 관련
+*.pyc
+__pycache__/
