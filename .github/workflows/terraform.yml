@@ -77,8 +77,11 @@ jobs:
 
       - name: Invoke Lambda to initialize DB
         run: |
+          set -e
           aws lambda invoke \
-            --function-name init-db \
+            --function-name rds-sql-initializer \
             --payload '{}' \
             --region ap-northeast-2 \
             init-db-response.json
+	  echo "Lambda response:"
+          cat init-db-response.json
