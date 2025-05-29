@@ -55,6 +55,7 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.1
@@ -75,13 +76,21 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
+      - name: Configure AWS credentials
+        uses: aws-actions/configure-aws-credentials@v2
+        with:
+          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          region: ap-northeast-2
+
       - name: Invoke Lambda to initialize DB
         run: |
           set -e
+          echo "Invoking Lambda rds-sql-initializer..."
           aws lambda invoke \
             --function-name rds-sql-initializer \
             --payload '{}' \
             --region ap-northeast-2 \
             init-db-response.json
-	  echo "Lambda response:"
+          echo "Lambda response:"
           cat init-db-response.json
