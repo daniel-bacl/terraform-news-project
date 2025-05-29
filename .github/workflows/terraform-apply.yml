@@ -21,7 +21,7 @@ jobs:
 
       - name: Build Lambda zip before apply
         run: |
-          cd modules/lambda_sql_initializer
+          cd ../../modules/lambda_sql_initializer
           chmod +x build-zip.sh
           ./build-zip.sh
 
