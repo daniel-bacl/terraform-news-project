@@ -25,7 +25,6 @@ module "route" {
   private_subnet_ids = module.subnet.private_subnet_ids
   nat_gateway_id     = module.nat.nat_gateway_id
 }
-
 module "eks_roles" {
   source = "../../modules/iam"
 }
@@ -48,9 +47,10 @@ module "lambda_exec_role" {
   role_name = "lambda-exec-role"
 }
 
+
 module "lambda_function" {
-  source        = "../../modules/lambda/function"
-  lambda_function_name = "send-news-email"
+  source = "../../modules/lambda/function"
+  function_name = "send-news-email"
   role_arn      = module.lambda_exec_role.role_arn
   layer_arn     = module.lambda_layer.layer_arn
 
