@@ -27,8 +27,8 @@ module "route" {
 }
 
 module "security_group" {
-  source       = "../../modules/networking/security_group"
-  vpc_id       = module.vpc.vpc_id
+  source = "../../modules/networking/security_group"
+  vpc_id = module.vpc.vpc_id
 }
 
 module "iam" {

@@ -2,12 +2,15 @@ import pymysql
 import os
 
 def lambda_handler(event, context):
+    host_port = os.environ["DB_HOST"].split(":")
+    db_host = host_port[0]
+    db_port = int(host_port[1]) if len(host_port) > 1 else int(os.environ.get("DB_PORT", 3306))
     conn = pymysql.connect(
-        host=os.environ['DB_HOST'],
+        db_host,
         user=os.environ['DB_USER'],
         password=os.environ['DB_PASSWORD'],
         database=os.environ['DB_NAME'],
-        port=int(os.environ.get('DB_PORT', 3306))
+        db_port)
     )
 
     cursor = conn.cursor()
