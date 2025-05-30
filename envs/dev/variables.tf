@@ -11,14 +11,9 @@ variable "db_user" {
 }
 
 variable "db_password" {
-<<<<<<< Updated upstream
   type      = string
   sensitive = true
   default = ""
-=======
-  type    = string
-  default = "soldesk12!"
->>>>>>> Stashed changes
 }
 
 variable "db_name" {
@@ -35,7 +30,3 @@ variable "ses_sender" {
   type    = string
   default = "News_send@sol-dni.click"
 }
-<<<<<<< Updated upstream
-=======
-
->>>>>>> Stashed changes
