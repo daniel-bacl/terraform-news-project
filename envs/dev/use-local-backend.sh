@@ -13,3 +13,4 @@ echo "⚙️ Terraform 초기화 (local backend)"
 terraform init -reconfigure
 
 echo "✅ 로컬 백엔드로 전환 완료"
+

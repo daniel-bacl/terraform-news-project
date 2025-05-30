@@ -1,10 +1,8 @@
-name: Terraform CI/CD
+name: Terraform Plan
 
 on:
   pull_request:
     types: [opened, synchronize]
-  push:
-    branches: [main]
 
 permissions:
   pull-requests: write
@@ -12,7 +10,6 @@ permissions:
 jobs:
   plan:
     name: Terraform Plan
-    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     defaults:
       run:
@@ -20,9 +17,14 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.1
+
+      - name: Generate tfvars from secrets
+        run: |
+          echo 'db_password = "${{ secrets.DB_PASSWORD }}"' > terraform.auto.tfvars
 
       - name: Terraform Init
         run: terraform init -input=false
@@ -51,25 +53,24 @@ jobs:
 
     steps:
       - uses: actions/checkout@v4
+
       - uses: hashicorp/setup-terraform@v3
         with:
           terraform_version: 1.12.1
 
       ############################################
-      # ✅ Lambda zip 자동 생성 파트 추가 시작
+      # ✅ Lambda zip 자동 생성 파트 추가
       ############################################
 
       - name: Install zip utility
-        run: sudo apt-get install -y zip   # zip 설치
+        run: sudo apt-get install -y zip
 
       - name: Build Lambda Layer
         run: |
           cd modules/lambda/layer
           chmod +x build.sh
-          ./build.sh   # requirements.txt 기반 zip 생성
+          ./build.sh
 
-      ############################################
-      # ✅ Lambda zip 자동 생성 파트 추가 끝
       ############################################
 
       - name: Terraform Init
@@ -83,4 +84,3 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-

@@ -2,11 +2,7 @@
 
 variable "db_host" {
   type    = string
-<<<<<<< Updated upstream
   default = "newssubscribe.cb0ueo6m8a54.ap-northeast-2.rds.amazonaws.com"
-=======
-  default = "your-rds-endpoint.rds.amazonaws.com"
->>>>>>> Stashed changes
 }
 
 variable "db_user" {
@@ -15,8 +11,9 @@ variable "db_user" {
 }
 
 variable "db_password" {
-  type    = string
-  default = "soldesk12!"
+  type      = string
+  sensitive = true
+  default = ""
 }
 
 variable "db_name" {
@@ -33,4 +30,3 @@ variable "ses_sender" {
   type    = string
   default = "News_send@sol-dni.click"
 }
-

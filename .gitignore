@@ -22,3 +22,4 @@ lambda/function/lambda_function.zip  # ✅ 명시적으로 무시
 # Python 관련
 *.pyc
 __pycache__/
+
