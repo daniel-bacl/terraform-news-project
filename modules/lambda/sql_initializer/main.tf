@@ -1,20 +1,7 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/src"
+  source_dir  = "${path.module}"
   output_path = "${path.module}/sql_init.zip"
-}
-
-data "archive_file" "pymysql_layer_zip" {
-  type        = "zip"
-  source_dir  = "${path.module}/layer"
-  output_path = "${path.module}/pymysql_layer.zip"
-}
-
-resource "aws_lambda_layer_version" "pymysql" {
-  filename         = data.archive_file.pymysql_layer_zip.output_path
-  layer_name       = "pymysql-layer"
-  compatible_runtimes = ["python3.11"]
-  source_code_hash = data.archive_file.pymysql_layer_zip.output_base64sha256
 }
 
 resource "aws_lambda_function" "sql_initializer" {
@@ -25,9 +12,7 @@ resource "aws_lambda_function" "sql_initializer" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
-  layers = [
-    aws_lambda_layer_version.pymysql.arn
-  ]
+  layers = [var.pymysql_layer_arn]
 
   environment {
     variables = {

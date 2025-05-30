@@ -1,3 +1,7 @@
+variable "lambda_role_arn" {
+  type = string
+}
+
 variable "db_host" {
   type = string
 }
@@ -28,6 +32,6 @@ variable "lambda_security_group_id" {
   type = string
 }
 
-variable "lambda_role_arn" {
+variable "pymysql_layer_arn" {
   type = string
 }
