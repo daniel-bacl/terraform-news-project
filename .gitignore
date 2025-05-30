@@ -6,3 +6,4 @@ terraform.tfvars
 .crc
 .terraform.lock.hcl
 *.zip
+.idea/

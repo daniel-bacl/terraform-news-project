@@ -1,6 +1,6 @@
 data "archive_file" "lambda_zip" {
   type        = "zip"
-  source_dir  = "${path.module}/src"
+  source_dir  = "${path.module}"
   output_path = "${path.module}/sql_init.zip"
 }
 
@@ -11,6 +11,8 @@ resource "aws_lambda_function" "sql_initializer" {
   runtime          = "python3.11"
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
+
+  layers = [var.pymysql_layer_arn]
 
   environment {
     variables = {
