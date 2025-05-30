@@ -68,7 +68,7 @@ module "lambda_exec_role" {
 
 module "lambda_function" {
   source        = "../../modules/lambda/function"
-  function_name = "send-news-email"
+  lambda_function_name = "send-news-email"
   role_arn      = module.lambda_exec_role.role_arn
   layer_arn     = module.lambda_layer.layer_arn
 
