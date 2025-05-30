@@ -31,7 +31,10 @@ resource "aws_iam_policy" "lambda_policy" {
         Action = [
           "rds:DescribeDBInstances",
           "rds-data:ExecuteStatement",
-          "rds-db:connect"
+          "rds-db:connect",
+          "lambda:PublishLayerVersion",
+          "lambda:Get*",
+          "lambda:List*",
         ],
         Resource = "*"
       }
