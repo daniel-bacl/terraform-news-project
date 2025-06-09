@@ -1,4 +1,5 @@
-// 변수 정의는 필요 시 여기에 추가하세요.
+
+#// 변수 정의는 필요 시 여기에 추가하세요.
 
 variable "db_host" {
   type    = string
@@ -29,4 +30,14 @@ variable "db_charset" {
 variable "ses_sender" {
   type    = string
   default = "News_send@sol-dni.click"
+}
+
+variable "layer_arn" {
+  type    = string
+  default = null
+}
+
+variable "environment" {
+  type    = map(string)
+  default = {}
 }
