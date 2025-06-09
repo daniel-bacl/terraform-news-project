@@ -9,7 +9,7 @@ resource "aws_lambda_layer_version" "news_layer" {
 # pymysql_layer 를 archive_file 방식으로 정의
 data "archive_file" "pymysql_layer" {
   type        = "zip"
-  source_dir  = "${path.module}/python"
+  source_dir  = "${path.module}/zipforder"
   output_path = "${path.module}/pymysql_layer.zip"
 }
 
