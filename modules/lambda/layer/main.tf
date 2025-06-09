@@ -1,6 +1,6 @@
 data "archive_file" "pymysql_layer" {
   type        = "zip"
-  source_dir  = "${path.module}/python"
+  source_dir  = "${path.module}/zipforder"
   output_path = "${path.module}/pymysql_layer.zip"
 }
 
