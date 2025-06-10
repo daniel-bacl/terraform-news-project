@@ -26,11 +26,6 @@ module "route" {
   nat_gateway_id     = module.nat.nat_gateway_id
 }
 
-module "security_group" {
-  source = "../../modules/networking/security_group"
-  vpc_id = module.vpc.vpc_id
-}
-
 module "iam" {
   source = "../../modules/iam"
 }
@@ -85,5 +80,14 @@ module "sql_initializer" {
   ]
 }
 
+# EKS Cluster SG ID를 가져오기 위한 Data Source
+data "aws_eks_cluster" "this" {
+  name = module.eks.cluster_name
+}
 
-
+# 수정된 security_group 모듈 선언: eks_node_sg_id를 변수로 전달
+module "security_group" {
+  source          = "../../modules/networking/security_group"
+  vpc_id          = module.vpc.vpc_id
+  eks_node_sg_id  = data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
+}
