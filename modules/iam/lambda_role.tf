@@ -1,5 +1,6 @@
 resource "aws_iam_role" "lambda_exec_role" {
   name = "lambda_sql_initializer_role"
+
   assume_role_policy = jsonencode({
     Version = "2012-10-17",
     Statement = [{
@@ -12,12 +13,13 @@ resource "aws_iam_role" "lambda_exec_role" {
   })
 }
 
-resource "aws_iam_policy" "lambda_policy" {
-  name = "lambda_sql_initializer_policy"
+resource "aws_iam_policy" "lambda_combined_policy" {
+  name = "lambda_combined_policy"
 
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
+      # CloudWatch Logs
       {
         Effect = "Allow",
         Action = [
@@ -27,6 +29,7 @@ resource "aws_iam_policy" "lambda_policy" {
         ],
         Resource = "*"
       },
+      # RDS 및 Lambda 관련
       {
         Effect = "Allow",
         Action = [
@@ -38,18 +41,31 @@ resource "aws_iam_policy" "lambda_policy" {
           "lambda:List*"
         ],
         Resource = "*"
+      },
+      # EventBridge (CloudWatch Events)
+      {
+        Effect = "Allow",
+        Action = [
+          "events:ListRules",
+          "events:PutRule",
+          "events:PutTargets",
+          "events:RemoveTargets",
+          "events:DeleteRule"
+        ],
+        Resource = "*"
       }
     ]
   })
 }
 
-resource "aws_iam_role_policy_attachment" "lambda_policy_attachment" {
+resource "aws_iam_role_policy_attachment" "lambda_combined_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
-  policy_arn = aws_iam_policy.lambda_policy.arn
+  policy_arn = aws_iam_policy.lambda_combined_policy.arn
 }
 
 resource "aws_iam_policy" "lambda_vpc_access_policy" {
   name = "lambda_vpc_access_policy"
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
