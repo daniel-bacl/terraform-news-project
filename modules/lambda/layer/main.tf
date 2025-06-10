@@ -23,4 +23,3 @@ resource "aws_lambda_layer_version" "pymysql" {
 output "pymysql_layer_arn" {
   value = aws_lambda_layer_version.pymysql.arn
 }
-

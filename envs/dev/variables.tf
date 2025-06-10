@@ -1,9 +1,8 @@
-
 #// 변수 정의는 필요 시 여기에 추가하세요.
 
 variable "db_host" {
   type    = string
-  default   = ""
+  default = ""
 }
 
 variable "db_user" {
@@ -40,4 +39,14 @@ variable "layer_arn" {
 variable "environment" {
   type    = map(string)
   default = {}
+}
+
+variable "private_subnet_ids" {
+  type = list(string)
+  default = ["private_3b", "private_4d"]  # 실제 서브넷 ID로 변경
+}
+
+variable "lambda_sg_id" {
+  type    = string
+  default = "app_sg_id"  # 실제 보안 그룹 ID로 변경
 }

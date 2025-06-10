@@ -57,6 +57,7 @@ module "eks" {
 # ──────────────────────────────
 # 데이터베이스
 # ──────────────────────────────
+
 module "rds" {
   source             = "../../modules/rds"
   name               = "news-rds"
@@ -123,3 +124,4 @@ module "sql_initializer" {
     module.lambda_layer
   ]
 }
+

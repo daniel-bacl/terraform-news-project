@@ -65,11 +65,6 @@ jobs:
       - name: Install zip utility
         run: sudo apt-get install -y zip   # zip 설치
 
-      - name: Package Lambda Function
-        run: |
-          cd modules/lambda/function
-          zip -r ../../../lambda_function.zip lambda_function.py   # zip 생성
-
       - name: Build Lambda Layer
         run: |
           cd modules/lambda/layer

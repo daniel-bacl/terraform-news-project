@@ -15,11 +15,10 @@ resource "aws_iam_role" "lambda_exec_role" {
 
 resource "aws_iam_policy" "lambda_combined_policy" {
   name = "lambda_combined_policy"
-
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
-      # CloudWatch Logs
+      # CloudWatch Logs 권한
       {
         Effect = "Allow",
         Action = [
@@ -29,7 +28,7 @@ resource "aws_iam_policy" "lambda_combined_policy" {
         ],
         Resource = "*"
       },
-      # RDS 및 Lambda 관련
+      # Lambda + RDS 관련 권한
       {
         Effect = "Allow",
         Action = [
