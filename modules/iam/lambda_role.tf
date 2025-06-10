@@ -14,6 +14,7 @@ resource "aws_iam_role" "lambda_exec_role" {
 
 resource "aws_iam_policy" "lambda_policy" {
   name = "lambda_sql_initializer_policy"
+
   policy = jsonencode({
     Version = "2012-10-17",
     Statement = [
@@ -34,7 +35,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "rds-db:connect",
           "lambda:PublishLayerVersion",
           "lambda:Get*",
-          "lambda:List*",
+          "lambda:List*"
         ],
         Resource = "*"
       }

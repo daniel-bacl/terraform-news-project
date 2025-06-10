@@ -1,4 +1,4 @@
-코드에 CloudWatch 코드 입력
+ # 코드에 CloudWatch 코드 입력
 
 
 # ---------- 기본 의존 ----------
@@ -14,17 +14,17 @@ logger.setLevel(logging.INFO)
 
 # ---------- DB 설정 ----------
 DB = dict(
-    host=os.environ.get("DB_HOST"),
-    user=os.environ.get("DB_USER"),
-    password=os.environ.get("DB_PASSWORD"),
-    database=os.environ.get("DB_NAME"),
-    charset=os.environ.get("DB_CHARSET", "utf8mb4"),
+    host=os.environ.get("db_host"),
+    user=os.environ.get("db_user"),
+    password=os.environ.get("db_password"),
+    database=os.environ.get("db_name"),
+    charset=os.environ.get("db_charset", "utf8mb4"),
     cursorclass=pymysql.cursors.DictCursor
 )
 
 # ---------- SES 설정 ----------
 ses = boto3.client("ses", region_name="ap-northeast-2")
-SES_SENDER = os.environ.get("SES_SENDER")
+SES_SENDER = os.environ.get("ses_sender")
 
 
 # ---------- 상태 코드 enum ----------
@@ -51,7 +51,12 @@ def db():
 # ----------------------------------------------------------------------
 # 0) 뉴스+유저 조회
 # ----------------------------------------------------------------------
+from datetime import datetime
+
 def fetch_targets():
+    # 현재 시각의 '정각 시(hour)' 가져오기 (0~23)
+    current_hour = datetime.now().hour
+
     q = """
     SELECT c.id   AS cid,
            k.keyword,
@@ -64,12 +69,14 @@ def fetch_targets():
       JOIN subscribe s ON s.keyword_id = k.id
       JOIN users     u ON u.id = s.user_id
      WHERE c.is_send = 0
-        AND u.send_hour = %s
+       AND u.send_hour = %s
     ORDER BY c.id
     """
+
     with db() as cur:
-        cur.execute(q)
+        cur.execute(q, (current_hour,))
         return cur.fetchall()
+
 
 
 # ----------------------------------------------------------------------
@@ -141,7 +148,7 @@ def mark_sent(cids: set[int]):
 # ----------------------------------------------------------------------
 # 3) Lambda Entry Point
 # ----------------------------------------------------------------------
-def lambda_handler(event, context):
+def lambda_handler(event, context): 
     rows = fetch_targets()
 
     if not rows:
