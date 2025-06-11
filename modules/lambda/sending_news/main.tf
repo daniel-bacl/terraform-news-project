@@ -52,14 +52,14 @@ resource "aws_cloudwatch_event_rule" "weekday_hourly_trigger" {
 resource "aws_cloudwatch_event_target" "lambda_target" {
   rule      = aws_cloudwatch_event_rule.weekday_hourly_trigger.name
   target_id = "send-news-lambda"
-  arn       = module.lambda_function.lambda_arn
+  arn       = aws_lambda_function.this.arn
 }
 
 # ✅ Lambda 권한 허용
 resource "aws_lambda_permission" "allow_cloudwatch" {
   statement_id  = "AllowExecutionFromCloudWatch"
   action        = "lambda:InvokeFunction"
-  function_name = module.lambda_function.function_name
+  function_name = aws_lambda_function.this.function_name
   principal     = "events.amazonaws.com"
   source_arn    = aws_cloudwatch_event_rule.weekday_hourly_trigger.arn
 }
