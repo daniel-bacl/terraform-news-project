@@ -2,9 +2,6 @@ provider "aws" {
   region = "ap-northeast-2"
 }
 
-##########################################
-# 기존 인프라 참조
-##########################################
 
 # VPC
 data "aws_vpc" "selected" {
@@ -49,42 +46,6 @@ data "aws_iam_role" "lambda_exec_role" {
   name = "lambda_sql_initializer_role"
 }
 
-##########################################
-# Lambda 보안 그룹
-##########################################
-
-#resource "aws_security_group" "lambda_sg" {
-#  name        = "lambda-sg-mw"
-#  description = "SG for Lambda to access RDS"
-#  vpc_id      = data.aws_vpc.selected.id
-
-#  egress {
-#    from_port   = 0
-#    to_port     = 0
-#    protocol    = "-1"
-#    cidr_blocks = ["0.0.0.0/0"]
-#  }
-#
-# tags = {
-#   Name = "lambda-sg-mw"
-#  }
-#}
-
-# Lambda → RDS 통신 허용 (3306)
-#resource "aws_security_group_rule" "allow_lambda_to_rds" {
-#  type                     = "ingress"
-#  from_port                = 3306
-#  to_port                  = 3306
-#  protocol                 = "tcp"
-#  security_group_id        = data.aws_security_group.rds_sg.id
-#  source_security_group_id = aws_security_group.lambda_sg.id
-#  description              = "Allow Lambda access to RDS"
-#}
-
-##########################################
-# Lambda 함수
-##########################################
-
 resource "aws_lambda_function" "news-crawler_mw" {
   function_name = "news-crawler-lambda"
   package_type  = "Image"
@@ -109,10 +70,7 @@ resource "aws_lambda_function" "news-crawler_mw" {
     }
   }
 }
-##########################################
 # EventBridge Rule (스케줄 트리거 설정)
-##########################################
-
 resource "aws_cloudwatch_event_rule" "lambda_schedule_rule" {
   name                = "news-crawler-schedule-rule"
   description         = "Runs Lambda function on a schedule"
@@ -123,10 +81,7 @@ resource "aws_cloudwatch_event_rule" "lambda_schedule_rule" {
   }
 }
 
-##########################################
 # Lambda 권한 부여 (EventBridge → Lambda)
-##########################################
-
 resource "aws_lambda_permission" "allow_eventbridge" {
   statement_id  = "AllowExecutionFromEventBridge"
   action        = "lambda:InvokeFunction"  # Lambda 실행 권한 부여
@@ -135,10 +90,7 @@ resource "aws_lambda_permission" "allow_eventbridge" {
   source_arn    = aws_cloudwatch_event_rule.lambda_schedule_rule.arn  # EventBridge 규칙의 ARN (허용된 소스)
 }
 
-##########################################
 # EventBridge Rule → Lambda 연결 (타깃)
-##########################################
-
 resource "aws_cloudwatch_event_target" "lambda_target" {
   rule      = aws_cloudwatch_event_rule.lambda_schedule_rule.name  # 연결할 EventBridge 규칙 이름
   target_id = "lambda-news-crawler"  # 이 타깃을 식별하기 위한 ID
