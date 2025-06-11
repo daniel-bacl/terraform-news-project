@@ -92,7 +92,7 @@ module "sending_news" {
   handler            = "lambda_function.lambda_handler"
   runtime            = "python3.11"
   filename           = "${path.module}/../../zip/lambda_function.zip"
-  layer_arn          = module.lambda_layer.pymysql_layer_arn
+  pymysql_layer_arn          = module.lambda_layer.pymysql_layer_arn
   subnet_ids         = module.subnet.private_subnet_ids
   security_group_id  = module.security_group.app_sg_id
   ses_sender         = var.ses_sender
@@ -120,7 +120,7 @@ module "sql_initializer" {
   db_name                 = var.db_name
   private_subnet_ids      = module.subnet.private_subnet_ids
   lambda_security_group_id = module.security_group.app_sg_id
-  pymysql_layer_arn       = module.lambda_layer.layer_arn
+  pymysql_layer_arn       = module.lambda_layer.pymysql_layer_arn
 
   depends_on = [
     module.rds,
