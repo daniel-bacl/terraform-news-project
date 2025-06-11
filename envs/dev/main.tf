@@ -29,14 +29,18 @@ module "route" {
   nat_gateway_id     = module.nat.nat_gateway_id
 }
 
+# 수정된 security_group 모듈 선언: eks_node_sg_id를 변수로 전달
 module "security_group" {
   source = "../../modules/networking/security_group"
   vpc_id = module.vpc.vpc_id
+  eks_node_sg_id  = data.aws_eks_cluster.this.vpc_config[0].cluster_security_group_id
 }
 
 # ──────────────────────────────
 # IAM 및 클러스터
 # ──────────────────────────────
+
+
 module "iam" {
   source    = "../../modules/iam"
 }
@@ -84,16 +88,16 @@ module "lambda_layer" {
 }
 
 module "sending_news" {
-  source                = "../../modules/lambda/sending_news"
-  lambda_function_name  = "news-lambda-handler"
-  handler               = "lambda_function.lambda_handler"
-  runtime               = "python3.11"
-  filename              = "${path.module}/../../zip/lambda_function.zip"
-  role_arn = module.iam.lambda_role_arn
-  layer_arn             = module.lambda_layer.layer_arn
-  subnet_ids            = module.subnet.private_subnet_ids
-  security_group_id     = module.security_group.app_sg_id
-  ses_sender = var.ses_sender
+  source             = "../../modules/lambda/sending_news"
+  function_name      = "news-lambda-handler" 
+  lambda_role_arn    = module.iam.lambda_role_arn
+  handler            = "lambda_function.lambda_handler"
+  runtime            = "python3.11"
+  filename           = "${path.module}/../../zip/lambda_function.zip"
+  layer_arn          = module.lambda_layer.layer_arn
+  subnet_ids         = module.subnet.private_subnet_ids
+  security_group_id  = module.security_group.app_sg_id
+  ses_sender         = var.ses_sender
 
   environment = {
     DB_HOST     = module.rds.rds_endpoint
@@ -103,8 +107,8 @@ module "sending_news" {
   }
 
   depends_on = [
-    module.lambda_layer,
-    module.rds
+    module.rds,
+    module.lambda_layer
   ]
 }
 
@@ -124,4 +128,12 @@ module "sql_initializer" {
     module.lambda_layer
   ]
 }
+
+
+# EKS Cluster SG ID를 가져오기 위한 Data Source
+data "aws_eks_cluster" "this" {
+  name = module.eks.cluster_name
+}
+
+
 

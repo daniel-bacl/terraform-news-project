@@ -11,7 +11,7 @@ data "archive_file" "lambda_zip" {
 # Lambda CloudWatch 로그 그룹
 # --------------------------------------------
 resource "aws_cloudwatch_log_group" "lambda_logs" {
-  name              = "/aws/lambda/${var.lambda_function_name}"
+  name              = "/aws/lambda/${var.function_name}"
   retention_in_days = 14
 
   tags = {
@@ -23,10 +23,10 @@ resource "aws_cloudwatch_log_group" "lambda_logs" {
 # Lambda 함수 리소스
 # --------------------------------------------
 resource "aws_lambda_function" "this" {
-  function_name = var.lambda_function_name
-  role          = var.role_arn
-  handler = "Sending_news.lambda_function.lambda_handler"
-  runtime       = "python3.11"
+  function_name = var.function_name
+  role          = var.lambda_role_arn
+  handler       = var.handler
+  runtime       = var.runtime
 
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
@@ -35,6 +35,11 @@ resource "aws_lambda_function" "this" {
 
   environment {
     variables = var.environment
+  }
+
+  vpc_config {
+    subnet_ids         = var.subnet_ids
+    security_group_ids = [var.security_group_id]
   }
 }
 
