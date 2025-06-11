@@ -32,6 +32,10 @@ resource "aws_eks_node_group" "default" {
 
   instance_types = ["t3.medium"]
 
+  remote_access {
+    ec2_ssh_key = "my-kp"
+  }
+
   tags = {
     Name = "${var.cluster_name}-ng"
   }
