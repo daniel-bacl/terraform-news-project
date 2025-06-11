@@ -19,3 +19,9 @@ variable "lambda_sg_id" {
   type    = string
   default = "app_sg_id"  # 실제 보안 그룹 ID로 변경
 }
+
+variable "docker_image_uri" {
+  type = string
+  sensitive = true
+  default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler-lambda2"
+}

@@ -110,6 +110,12 @@ module "sending_news" {
   ]
 }
 
+module "docker_images" {
+  source = "../../modules/lambda/docker_images"
+  db_password = var.lambda_env["DB_PASSWORD"]
+  docker_image_uri = var.docker_image_uri
+}
+
 module "sql_initializer" {
   source                   = "../../modules/lambda/sql_initializer"
   lambda_role_arn          = module.iam.lambda_role_arn
