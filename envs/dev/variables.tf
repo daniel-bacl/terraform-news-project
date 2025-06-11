@@ -26,7 +26,7 @@ variable "ses_sender" {
   default = "News_send@sol-dni.click"
 }
 
-variable "layer_arn" {
+variable "pymysql_layer_arn" {
   type    = string
   default = null
 }
