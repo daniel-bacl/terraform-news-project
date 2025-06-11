@@ -23,7 +23,7 @@ variable "filename" {
   type        = string
 }
 
-variable "layer_arn" {
+variable "pymysql_layer_arn" {
   description = "연결할 Lambda Layer ARN"
   type        = string
 }

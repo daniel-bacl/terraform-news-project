@@ -31,7 +31,7 @@ resource "aws_lambda_function" "this" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
-  layers = [var.layer_arn]
+  layers = [var.pymysql_layer_arn]
 
   environment {
     variables = var.environment
