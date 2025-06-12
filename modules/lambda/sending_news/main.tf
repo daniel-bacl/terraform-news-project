@@ -10,14 +10,14 @@ data "archive_file" "lambda_zip" {
 # --------------------------------------------
 # Lambda CloudWatch 로그 그룹
 # --------------------------------------------
-resource "aws_cloudwatch_log_group" "lambda_logs" {
-  name              = "/aws/lambda/${var.function_name}"
-  retention_in_days = 14
+#resource "aws_cloudwatch_log_group" "lambda_logs" {
+#  name              = "/aws/lambda/${var.function_name}"
+#  retention_in_days = 14
 
-  tags = {
-    Name = "Lambda Log Group"
-  }
-}
+#  tags = {
+#    Name = "Lambda Log Group"
+#  }
+#}
 
 # --------------------------------------------
 # Lambda 함수 리소스
@@ -31,7 +31,9 @@ resource "aws_lambda_function" "this" {
   filename         = data.archive_file.lambda_zip.output_path
   source_code_hash = data.archive_file.lambda_zip.output_base64sha256
 
-  layers = [var.layer_arn]
+  layers = [var.pymysql_layer_arn]
+
+  timeout             = 60
 
   environment {
     variables = var.environment
