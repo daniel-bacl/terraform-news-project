@@ -1,72 +1,22 @@
-provider "aws" {
-  region = "ap-northeast-2"
-}
-
-
-# VPC
-data "aws_vpc" "selected" {
-  filter {
-    name   = "tag:Name"
-    values = ["team-vpc"]
-  }
-}
-
-# Private Subnets
-data "aws_subnets" "private" {
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.selected.id]
-  }
-
-  filter {
-    name   = "tag:Name"
-    values = ["private-subnet-3b", "private-subnet-4d"]
-  }
-}
-
-# RDS 보안 그룹 (태그 기반 자동 탐색)
-data "aws_security_group" "rds_sg" {
-  filter {
-    name   = "tag:Name"
-    values = ["rds-sg"]  # <- 실제 SG에 붙어있는 Name 태그
-  }
-
-  filter {
-    name   = "vpc-id"
-    values = [data.aws_vpc.selected.id]
-  }
-}
-
-# RDS 인스턴스
-data "aws_db_instance" "rds" {
-  db_instance_identifier = "news-rds"
-}
-
-data "aws_iam_role" "lambda_exec_role" {
-  name = "lambda_sql_initializer_role"
-}
-
 resource "aws_lambda_function" "news-crawler_mw" {
   function_name = "news-crawler-lambda"
   package_type  = "Image"
   image_uri     = var.docker_image_uri
-  role          = data.aws_iam_role.lambda_exec_role.arn
-  timeout       = 300
-  memory_size   = 1024
+  role          = var.lambda_exec_role_arn
+  timeout       = 30
 
- # Lambda가 RDS에 접근할 수 있도록 rds-sg를 직접 연결
   vpc_config {
-    subnet_ids         = data.aws_subnets.private.ids
-    security_group_ids = [data.aws_security_group.rds_sg.id]
+    subnet_ids         = var.private_subnet_ids
+    security_group_ids = [var.rds_sg_id]
   }
 
   environment {
     variables = {
-      DB_HOST     = data.aws_db_instance.rds.address
-      DB_PORT     = "3306"
-      DB_USER     = "root"
+      DB_HOST     = var.rds_endpoint
+      DB_PORT     = var.rds_port
+      DB_NAME     = var.rds_db_name
+      DB_USER     = var.rds_username
       DB_PASSWORD = var.db_password
-      DB_NAME     = "NewsSubscribe"
     }
   }
 }
