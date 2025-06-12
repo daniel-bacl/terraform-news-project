@@ -112,6 +112,14 @@ module "sending_news" {
 
 module "docker_images" {
   source = "../../modules/lambda/docker_images"
+
+  lambda_exec_role_arn   = module.iam.lambda_role_arn
+  private_subnet_ids     = module.subnet.private_subnet_ids
+  rds_sg_id              = module.security_group.rds_sg_id
+  rds_endpoint           = module.rds.rds_endpoint
+  rds_port               = "3306"
+  rds_username           = var.lambda_env["DB_USER"]
+  rds_db_name            = var.lambda_env["DB_NAME"]
   db_password = var.lambda_env["DB_PASSWORD"]
   docker_image_uri = var.docker_image_uri
 }
