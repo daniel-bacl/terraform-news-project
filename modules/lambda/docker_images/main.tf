@@ -3,7 +3,7 @@ resource "aws_lambda_function" "news-crawler_mw" {
   package_type  = "Image"
   image_uri     = var.docker_image_uri
   role          = var.lambda_exec_role_arn
-  timeout       = 30
+  timeout       = 120
 
   vpc_config {
     subnet_ids         = var.private_subnet_ids
