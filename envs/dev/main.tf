@@ -85,6 +85,48 @@ module "lambda_layer" {
   source     = "../../modules/lambda/layer"
 }
 
+module "sql_initializer" {
+  source                   = "../../modules/lambda/sql_initializer"
+  lambda_role_arn          = module.iam.lambda_role_arn
+  db_host                  = module.rds.rds_endpoint
+  db_user                  = var.lambda_env["DB_USER"]
+  db_password              = var.lambda_env["DB_PASSWORD"]
+  db_name                  = var.lambda_env["DB_NAME"]
+  private_subnet_ids       = module.subnet.private_subnet_ids
+  lambda_security_group_id = module.security_group.app_sg_id
+  pymysql_layer_arn        = module.lambda_layer.pymysql_layer_arn
+
+  depends_on = [
+    module.rds,
+    module.lambda_layer
+  ]
+}
+
+module "docker_images" {
+  source = "../../modules/lambda/docker_images"
+
+  lambda_exec_role_arn   = module.iam.lambda_role_arn
+  private_subnet_ids     = module.subnet.private_subnet_ids
+  rds_sg_id              = module.security_group.rds_sg_id
+  rds_endpoint           = module.rds.rds_endpoint
+  rds_port               = "3306"
+  rds_username           = var.lambda_env["DB_USER"]
+  rds_db_name            = var.lambda_env["DB_NAME"]
+  db_password = var.lambda_env["DB_PASSWORD"]
+  docker_image_uri = var.docker_image_uri
+}
+
+module "crawler_schedule" {
+  source = "../../modules/lambda/eventbridge_scheduler"
+
+  rule_name            = "crawler-schedule-rule"
+  description          = "Crawler runs every hour"
+  schedule_expression  = "rate(1 hour)"
+  lambda_function_name = module.docker_images.lambda_function_name
+  lambda_function_arn  = module.docker_images.lambda_function_arn
+  target_id            = "crawler"
+}
+
 module "sending_news" {
   source            = "../../modules/lambda/sending_news"
   function_name     = "news-lambda-handler"
@@ -110,33 +152,13 @@ module "sending_news" {
   ]
 }
 
-module "docker_images" {
-  source = "../../modules/lambda/docker_images"
+module "sending_news_schedule" {
+  source = "../../modules/lambda/eventbridge_scheduler"
 
-  lambda_exec_role_arn   = module.iam.lambda_role_arn
-  private_subnet_ids     = module.subnet.private_subnet_ids
-  rds_sg_id              = module.security_group.rds_sg_id
-  rds_endpoint           = module.rds.rds_endpoint
-  rds_port               = "3306"
-  rds_username           = var.lambda_env["DB_USER"]
-  rds_db_name            = var.lambda_env["DB_NAME"]
-  db_password = var.lambda_env["DB_PASSWORD"]
-  docker_image_uri = var.docker_image_uri
-}
-
-module "sql_initializer" {
-  source                   = "../../modules/lambda/sql_initializer"
-  lambda_role_arn          = module.iam.lambda_role_arn
-  db_host                  = module.rds.rds_endpoint
-  db_user                  = var.lambda_env["DB_USER"]
-  db_password              = var.lambda_env["DB_PASSWORD"]
-  db_name                  = var.lambda_env["DB_NAME"]
-  private_subnet_ids       = module.subnet.private_subnet_ids
-  lambda_security_group_id = module.security_group.app_sg_id
-  pymysql_layer_arn        = module.lambda_layer.pymysql_layer_arn
-
-  depends_on = [
-    module.rds,
-    module.lambda_layer
-  ]
+  rule_name            = "sending-news-schedule-rule"
+  description          = "Send news weekdays at 9AM"
+  schedule_expression  = "cron(0 * ? * MON-FRI *)"
+  lambda_function_name = module.sending_news.lambda_function_name
+  lambda_function_arn  = module.sending_news.lambda_function_arn
+  target_id            = "sending-news"
 }
