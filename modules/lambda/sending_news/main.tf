@@ -10,14 +10,14 @@ data "archive_file" "lambda_zip" {
 # --------------------------------------------
 # Lambda CloudWatch 로그 그룹
 # --------------------------------------------
-resource "aws_cloudwatch_log_group" "lambda_logs" {
-  name              = "/aws/lambda/${var.function_name}"
-  retention_in_days = 14
+#resource "aws_cloudwatch_log_group" "lambda_logs" {
+#  name              = "/aws/lambda/${var.function_name}"
+#  retention_in_days = 14
 
-  tags = {
-    Name = "Lambda Log Group"
-  }
-}
+#  tags = {
+#    Name = "Lambda Log Group"
+#  }
+#}
 
 # --------------------------------------------
 # Lambda 함수 리소스
