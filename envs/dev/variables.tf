@@ -1,5 +1,6 @@
 #// 변수 정의는 필요 시 여기에 추가하세요.
 
+
 variable "lambda_env" {
   type = map(string)
   default = {
@@ -23,5 +24,5 @@ variable "lambda_sg_id" {
 variable "docker_image_uri" {
   type = string
   sensitive = true
-  default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler-lambda2:latest"
+  default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler-lambda:latest"
 }

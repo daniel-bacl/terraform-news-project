@@ -46,7 +46,7 @@ module "iam" {
 module "eks" {
   source        = "../../modules/eks"
   cluster_name  = "news-cluster"
-  subnet_ids    = module.subnet.private_subnet_ids
+  subnet_ids    = module.subnet.public_subnet_ids
   eks_role_arn  = module.iam.eks_cluster_role_arn
   node_role_arn = module.iam.eks_node_role_arn
 
