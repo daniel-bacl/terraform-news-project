@@ -33,6 +33,8 @@ resource "aws_lambda_function" "this" {
 
   layers = [var.pymysql_layer_arn]
 
+  timeout             = 60
+
   environment {
     variables = var.environment
   }
