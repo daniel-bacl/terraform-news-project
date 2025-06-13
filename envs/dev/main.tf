@@ -162,3 +162,53 @@ module "sending_news_schedule" {
   lambda_function_arn  = module.sending_news.lambda_function_arn
   target_id            = "sending-news"
 }
+
+
+# ─────────────────────────────
+# Monitoring
+# ─────────────────────────────
+
+module "monitoring" {
+  source         = "../../modules/monitoring"
+  region         = "ap-northeast-2"
+  rds_instance_id = module.rds.rds_identifier
+  alert_emails    = [
+    "95eksldpf@gmail.com",
+    "skdurtlxx@gmail.com",
+    "jintonylove@gmail.com",
+    "sunyj1225@gmail.com",
+    "oosuoos@gmail.com"
+  ]
+}
+
+provider "helm" {
+  kubernetes {
+    config_path = "~/.kube/config"
+  }
+}
+
+resource "helm_release" "kube_prometheus_stack" {
+  name             = "kube-prometheus-stack"
+  repository       = "https://prometheus-community.github.io/helm-charts"
+  chart            = "kube-prometheus-stack"
+  namespace        = "monitoring"
+  create_namespace = true
+  version          = "58.0.1"
+}
+
+resource "helm_release" "grafana" {
+  name        = "grafana"
+  repository  = "https://grafana.github.io/helm-charts"
+  chart       = "grafana"
+  version     = "7.3.7"
+  namespace   = "monitoring"
+  depends_on  = [helm_release.kube_prometheus_stack]
+  set {
+    name  = "adminPassword"
+    value = "YourStrongPassword123!"
+  }
+  set {
+    name  = "service.type"
+    value = "LoadBalancer"
+  }
+}
