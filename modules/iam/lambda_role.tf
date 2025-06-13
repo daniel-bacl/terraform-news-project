@@ -35,6 +35,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "lambda:PublishLayerVersion",
           "lambda:Get*",
           "lambda:List*",
+          "ses:SendEmail",
         ],
         Resource = "*"
       }
@@ -68,23 +69,4 @@ resource "aws_iam_policy" "lambda_vpc_access_policy" {
 resource "aws_iam_role_policy_attachment" "lambda_vpc_policy_attachment" {
   role       = aws_iam_role.lambda_exec_role.name
   policy_arn = aws_iam_policy.lambda_vpc_access_policy.arn
-}
-
-resource "aws_iam_policy" "ses_send_email" {
-  name   = "AllowSESSendEmail"
-  policy = jsonencode({
-    Version = "2012-10-17",
-    Statement = [
-      {
-        Effect   = "Allow",
-        Action   = "ses:SendEmail",
-        Resource = "arn:aws:ses:ap-northeast-2:635140758252:identity/sol-dni.click"
-      }
-    ]
-  })
-}
-
-resource "aws_iam_role_policy_attachment" "lambda_ses_attach" {
-  role       = aws_iam_role.lambda_sql_initializer_role.name
-  policy_arn = aws_iam_policy.ses_send_email.arn
 }
