@@ -24,5 +24,5 @@ variable "lambda_sg_id" {
 variable "docker_image_uri" {
   type = string
   sensitive = true
-  default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler-lambda:latest"
+  default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler-lambda2:latest"
 }
