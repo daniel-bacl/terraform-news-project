@@ -30,7 +30,6 @@ CREATE TABLE subscribe (
 CREATE TABLE crolling (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     keyword_id BIGINT NOT NULL,
-    user_id BIGINT NOT NULL,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (keyword_id) REFERENCES keyword(id)
 );
