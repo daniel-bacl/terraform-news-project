@@ -51,10 +51,10 @@ def db():
 # ----------------------------------------------------------------------
 # 0) 뉴스+유저 조회
 # ----------------------------------------------------------------------
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
 
 def fetch_targets():
-    # 현재 시각의 '정각 시(hour)' 가져오기 (0~23)
+    # 현재 시각 (한국시간 기준, UTC+9)
     current_hour = (datetime.utcnow() + timedelta(hours=9)).hour
 
     q = """
@@ -68,16 +68,16 @@ def fetch_targets():
       JOIN news      n ON n.crolling_id = c.id
       JOIN subscribe s ON s.keyword_id = k.id
       JOIN users     u ON u.id = s.user_id
-     WHERE c.is_send = 0
+ LEFT JOIN send_history sh 
+       ON sh.user_id = u.id AND sh.crolling_id = c.id
+     WHERE sh.id IS NULL
        AND u.send_hour = %s
     ORDER BY c.id
     """
 
     with db() as cur:
-        cur.execute(q, (current_hour,))
+        cur.execute(q, (str(current_hour).zfill(2),))  # "01" ~ "23" 두자리 맞춤
         return cur.fetchall()
-
-
 
 # ----------------------------------------------------------------------
 # 1) 이메일 발송
