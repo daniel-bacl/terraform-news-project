@@ -42,8 +42,3 @@ variable "security_group_id" {
   description = "Lambda에 연결할 보안 그룹 ID"
   type        = string
 }
-
-variable "ses_sender" {
-  description = "SES 발신자 이메일 주소"
-  type        = string
-}

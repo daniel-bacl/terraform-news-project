@@ -121,7 +121,7 @@ module "crawler_schedule" {
 
   rule_name            = "crawler-schedule-rule"
   description          = "Crawler runs every hour"
-  schedule_expression  = "rate(1 hour)"
+  schedule_expression  = "cron(50 0-23 ? * MON-FRI *)"
   lambda_function_name = module.docker_images.lambda_function_name
   lambda_function_arn  = module.docker_images.lambda_function_arn
   target_id            = "crawler"
@@ -137,12 +137,12 @@ module "sending_news" {
   pymysql_layer_arn = module.lambda_layer.pymysql_layer_arn
   subnet_ids        = module.subnet.private_subnet_ids
   security_group_id = module.security_group.app_sg_id
-  ses_sender        = var.lambda_env["SES_SENDER"]
 
   environment = merge(
     var.lambda_env,
     {
       DB_HOST = module.rds.rds_endpoint
+      SES_SENDER = var.lambda_env["SES_SENDER"]
     }
   )
 
