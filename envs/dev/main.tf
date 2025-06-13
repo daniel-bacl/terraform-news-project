@@ -137,12 +137,12 @@ module "sending_news" {
   pymysql_layer_arn = module.lambda_layer.pymysql_layer_arn
   subnet_ids        = module.subnet.private_subnet_ids
   security_group_id = module.security_group.app_sg_id
-  ses_sender        = var.lambda_env["SES_SENDER"]
 
   environment = merge(
     var.lambda_env,
     {
       DB_HOST = module.rds.rds_endpoint
+      SES_SENDER = var.lambda_env["SES_SENDER"]
     }
   )
 
