@@ -9,16 +9,16 @@ resource "aws_sns_topic_subscription" "email" {
   for_each = toset(var.alert_emails)
   topic_arn = aws_sns_topic.monitoring_alerts.arn
   protocol  = "email"
-  endpoint  = each.value # 알림 받을 이메일 주소 (variables.tf 참고)
+  endpoint  = each.value
 }
 
 # --------------------
-# CloudWatch Log Metric Filter - Lambda [MAIL_SEND_FAIL] 감지
+# CloudWatch Log Metric Filter - Lambda MAIL_SEND_FAIL 감지
 # --------------------
 resource "aws_cloudwatch_log_metric_filter" "lambda_mail_fail" {
   name           = "lambda-mail-fail"
   log_group_name = "/aws/lambda/news-lambda-handler"
-  pattern        = "[MAIL_SEND_FAIL]"
+  pattern        = "MAIL_SEND_FAIL"
 
   metric_transformation {
     name      = "MailSendFail"
@@ -28,7 +28,7 @@ resource "aws_cloudwatch_log_metric_filter" "lambda_mail_fail" {
 }
 
 # --------------------
-# CloudWatch Metric Alarm - [MAIL_SEND_FAIL] 알람
+# CloudWatch Metric Alarm - MAIL_SEND_FAIL 알람
 # --------------------
 resource "aws_cloudwatch_metric_alarm" "mail_fail_alarm" {
   alarm_name          = "MailSendFailAlarm"
@@ -39,7 +39,7 @@ resource "aws_cloudwatch_metric_alarm" "mail_fail_alarm" {
   period              = 300
   statistic           = "Sum"
   threshold           = 1
-  alarm_description   = "[MAIL_SEND_FAIL] 로그가 감지됨"
+  alarm_description   = "MAIL_SEND_FAIL 로그가 감지됨"
   actions_enabled     = true
   alarm_actions       = [aws_sns_topic.monitoring_alerts.arn]
 }
@@ -94,14 +94,14 @@ resource "aws_cloudwatch_dashboard" "main" {
         "width": 8,
         "height": 6,
         "properties": {
-          "queryString": "fields @timestamp, @message | filter @message like /\\[MAIL_SEND_FAIL\\]/ | sort @timestamp desc | limit 20",
+          "query": "fields @timestamp, @message | filter @message like /MAIL_SEND_FAIL/ | sort @timestamp desc | limit 20",
           "region": var.region,
-          "title": "Lambda: [MAIL_SEND_FAIL] 로그"
-        },
-        "logGroupNames": [
-          "/aws/lambda/news-crawler-lambda",
-          "/aws/lambda/news-lambda-handler"
-        ]
+          "title": "Lambda: MAIL_SEND_FAIL 로그",
+          "logGroupNames": [
+            "/aws/lambda/news-crawler-lambda",
+            "/aws/lambda/news-lambda-handler"
+          ]
+        }
       },
       {
         "type": "log",
@@ -110,14 +110,14 @@ resource "aws_cloudwatch_dashboard" "main" {
         "width": 8,
         "height": 6,
         "properties": {
-          "queryString": "fields @timestamp, @message | filter @message like /\\[MAIL_SEND_SUCCESS\\]/ | sort @timestamp desc | limit 20",
+          "query": "fields @timestamp, @message | filter @message like /MAIL_SEND_SUCCESS/ | sort @timestamp desc | limit 20",
           "region": var.region,
-          "title": "Lambda: [MAIL_SEND_SUCCESS] 로그"
-        },
-        "logGroupNames": [
-          "/aws/lambda/news-crawler-lambda",
-          "/aws/lambda/news-lambda-handler"
-        ]
+          "title": "Lambda: MAIL_SEND_SUCCESS 로그",
+          "logGroupNames": [
+            "/aws/lambda/news-crawler-lambda",
+            "/aws/lambda/news-lambda-handler"
+          ]
+        }
       }
     ]
   })
