@@ -7,6 +7,26 @@ resource "aws_db_subnet_group" "this" {
   }
 }
 
+resource "aws_db_parameter_group" "timezone" {
+  name        = "${var.name}-timezone"
+  family      = "mysql8.0"
+
+  parameter {
+    name  = "time_zone"
+    value = "Asia/Seoul"
+  }
+
+  parameter {
+    name  = "character_set_server"
+    value = "utf8mb4"
+  }
+
+  parameter {
+    name  = "collation_server"
+    value = "utf8mb4_unicode_ci"
+  }
+}
+
 resource "aws_db_instance" "this" {
   identifier              = var.name
   engine                  = "mysql"
@@ -23,6 +43,7 @@ resource "aws_db_instance" "this" {
   deletion_protection     = false
   db_subnet_group_name    = aws_db_subnet_group.this.name
   vpc_security_group_ids  = var.security_group_ids
+  parameter_group_name    = aws_db_parameter_group.timezone.name
 
   tags = {
     Name = var.name
