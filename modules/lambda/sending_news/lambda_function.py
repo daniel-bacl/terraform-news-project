@@ -171,18 +171,22 @@ def lambda_handler(event, context):
 
     for email, data in grouped.items():
         uid = list(data["uids"])[0]
-        cid = list(data["cids"])[0]
-        hid = add_history(uid, cid)
+
+        # 여러 crolling_id 모두 기록
+        hids = []
+        for cid in data["cids"]:
+            hid = add_history(uid, cid)
+            hids.append(hid)
 
         try:
             send_via_ses(email, data["news_by_keyword"], today)
-            update_history(hid, St.SUCCESS)
+            for hid in hids:
+                update_history(hid, St.SUCCESS)
         except Exception as e:
             logger.error(f"[메일 전송 실패] 대상={email}, 에러={e}")
             logger.error(traceback.format_exc())
-            update_history(hid, St.FAIL)
-
-        mark_sent(data["cids"])
+            for hid in hids:
+                update_history(hid, St.FAIL)
 
 
     logger.info(f"총 {len(grouped)}명에게 뉴스 알림 전송 완료")

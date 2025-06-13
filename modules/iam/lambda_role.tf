@@ -35,6 +35,7 @@ resource "aws_iam_policy" "lambda_policy" {
           "lambda:PublishLayerVersion",
           "lambda:Get*",
           "lambda:List*",
+          "ses:SendEmail",
         ],
         Resource = "*"
       }
