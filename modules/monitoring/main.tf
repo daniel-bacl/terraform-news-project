@@ -94,7 +94,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         "width": 8,
         "height": 6,
         "properties": {
-          "query": "fields @timestamp, @message | filter @message like /\\[MAIL_SEND_FAIL\\]/ | sort @timestamp desc | limit 20",
+          "queryString": "fields @timestamp, @message | filter @message like /\\[MAIL_SEND_FAIL\\]/ | sort @timestamp desc | limit 20",
           "region": var.region,
           "title": "Lambda: [MAIL_SEND_FAIL] 로그"
         },
@@ -110,7 +110,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         "width": 8,
         "height": 6,
         "properties": {
-          "query": "fields @timestamp, @message | filter @message like /\\[MAIL_SEND_SUCCESS\\]/ | sort @timestamp desc | limit 20",
+          "queryString": "fields @timestamp, @message | filter @message like /\\[MAIL_SEND_SUCCESS\\]/ | sort @timestamp desc | limit 20",
           "region": var.region,
           "title": "Lambda: [MAIL_SEND_SUCCESS] 로그"
         },
