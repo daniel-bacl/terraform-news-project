@@ -31,7 +31,6 @@ CREATE TABLE crolling (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     keyword_id BIGINT NOT NULL,
     user_id BIGINT NOT NULL,
-    is_send BOOLEAN DEFAULT 0,
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (keyword_id) REFERENCES keyword(id)
 );
@@ -67,5 +66,5 @@ CREATE TABLE send_history (
 
 INSERT INTO send_status (`send_status`) 
 VALUES ('send'),    # 1 기본값
-('succees'),		# 2 성공
+('success'),		# 2 성공
 ('fail');			# 3 실패
