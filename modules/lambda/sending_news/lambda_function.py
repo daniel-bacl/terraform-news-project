@@ -3,7 +3,7 @@
 
 # ---------- 기본 의존 ----------
 import enum, json, pymysql, boto3, traceback, os
-from datetime import datetime, timezone
+from datetime import datetime, timezone, timedelta
 from contextlib import contextmanager
 from collections import defaultdict
 import logging
@@ -24,7 +24,7 @@ DB = dict(
 
 # ---------- SES 설정 ----------
 ses = boto3.client("ses", region_name="ap-northeast-2")
-SES_SENDER = os.environ.get("ses_sender")
+SES_SENDER = os.environ.get("SES_SENDER")
 
 
 # ---------- 상태 코드 enum ----------
@@ -55,7 +55,7 @@ from datetime import datetime
 
 def fetch_targets():
     # 현재 시각의 '정각 시(hour)' 가져오기 (0~23)
-    current_hour = datetime.now().hour
+    current_hour = (datetime.utcnow() + timedelta(hours=9)).hour
 
     q = """
     SELECT c.id   AS cid,
