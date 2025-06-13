@@ -29,6 +29,7 @@ jobs:
 
       - name: Restore kubeconfig
         run: |
+          mkdir -p ~/.kube
           echo "${{ secrets.KUBECONFIG_CONTENT }}" | base64 -d > ~/.kube/config
 
       - name: Terraform Init
