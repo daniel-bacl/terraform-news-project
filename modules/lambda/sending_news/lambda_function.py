@@ -56,7 +56,7 @@ from datetime import datetime
 def fetch_targets():
     # 현재 시각의 '정각 시(hour)' 가져오기 (0~23)
     current_hour = (datetime.utcnow() + timedelta(hours=9)).hour
-    
+
     q = """
     SELECT c.id   AS cid,
            k.keyword,
@@ -78,8 +78,6 @@ def fetch_targets():
     with db() as cur:
         cur.execute(q, (current_hour,))
         return cur.fetchall()
-
-
 
 # ----------------------------------------------------------------------
 # 1) 이메일 발송
