@@ -18,7 +18,7 @@ resource "aws_sns_topic_subscription" "email" {
 resource "aws_cloudwatch_log_metric_filter" "lambda_mail_fail" {
   name           = "lambda-mail-fail"
   log_group_name = "/aws/lambda/news-lambda-handler"
-  pattern        = "[* '[메일 전송 실패]' *]"
+  pattern        = "[메일 전송 실패]"
 
   metric_transformation {
     name      = "MailSendFail"

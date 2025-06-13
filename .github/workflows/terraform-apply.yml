@@ -27,6 +27,10 @@ jobs:
         run: |
           echo 'db_password = "${{ secrets.DB_PASSWORD }}"' > terraform.auto.tfvars
 
+      - name: Restore kubeconfig
+        run: |
+          echo "${{ secrets.KUBECONFIG_CONTENT }}" | base64 -d > ~/.kube/config
+
       - name: Terraform Init
         run: terraform init -reconfigure -input=false
         env:
@@ -38,4 +42,4 @@ jobs:
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
+          KUBECONFIG: ~/.kube/config
