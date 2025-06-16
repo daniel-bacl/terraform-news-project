@@ -67,6 +67,23 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # --------------------
 # CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
 # --------------------
+locals {
+  lambda_fail_query = trimspace(<<-EOT
+    fields @timestamp, @message
+    | filter @message like /실패/
+    | sort @timestamp desc
+    | limit 20
+  EOT
+  )
+
+  lambda_success_query = trimspace(<<-EOT
+    fields @timestamp, @message
+    | filter @message like /성공/
+    | sort @timestamp desc
+    | limit 20
+  EOT
+  )
+}
 
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "main-monitoring"
@@ -95,7 +112,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         "width": 8,
         "height": 6,
         "properties": {
-          "query": "fields @timestamp, @message | filter @message like /실패/ | sort @timestamp desc | limit 20",
+          "query": local.lambda_fail_query,
           "region": var.region,
           "title": "Lambda: MAIL_SEND_FAIL 로그",
           "logGroupNames": [
@@ -112,7 +129,7 @@ resource "aws_cloudwatch_dashboard" "main" {
         "width": 8,
         "height": 6,
         "properties": {
-          "query": "fields @timestamp, @message | filter @message like /성공/ | sort @timestamp desc | limit 20",
+          "query": local.lambda_success_query,
           "region": var.region,
           "title": "Lambda: MAIL_SEND_SUCCESS 로그",
           "logGroupNames": [

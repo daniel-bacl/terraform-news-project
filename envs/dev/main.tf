@@ -194,6 +194,7 @@ resource "helm_release" "kube_prometheus_stack" {
   namespace        = "monitoring"
   create_namespace = true
   version          = "58.0.1"
+  depends_on = [module.eks]
 }
 
 resource "helm_release" "grafana" {
