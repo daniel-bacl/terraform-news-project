@@ -5,33 +5,22 @@ on:
 
 jobs:
   destroy:
-    name: Destroy Infra
+    name: Terraform Destroy (Helm First)
     runs-on: ubuntu-latest
-
     defaults:
       run:
         working-directory: ./envs/dev
 
     steps:
-      - name: Checkout source code
+      - name: Checkout Repository
         uses: actions/checkout@v4
 
-      - name: Configure AWS credentials
-        uses: aws-actions/configure-aws-credentials@v2
-        with:
-          aws-access-key-id: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          aws-secret-access-key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          aws-region: ap-northeast-2
+      - name: Install zip
+        run: sudo apt-get install -y zip
 
-      - name: Setup Terraform
-        uses: hashicorp/setup-terraform@v3
+      - uses: hashicorp/setup-terraform@v3
         with:
-          terraform_version: 1.12.1
-
-      - name: Restore kubeconfig
-        run: |
-          mkdir -p ~/.kube
-          echo "${{ secrets.KUBECONFIG_CONTENT }}" | base64 -d > ~/.kube/config
+          terraform_version: 1.6.6
 
       - name: Terraform Init
         run: terraform init -reconfigure -input=false
@@ -39,10 +28,17 @@ jobs:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
 
-      - name: Terraform Destroy
+      - name: Destroy Helm Releases First
+        run: |
+          terraform destroy -auto-approve \
+            -target=helm_release.kube_prometheus_stack \
+            -target=helm_release.grafana
+        env:
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+
+      - name: Destroy Remaining Infrastructure
         run: terraform destroy -auto-approve
         env:
           AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          KUBECONFIG: ~/.kube/config
-
