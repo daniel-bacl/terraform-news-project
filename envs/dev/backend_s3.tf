@@ -5,6 +5,5 @@ terraform {
     region         = "ap-northeast-2"
     dynamodb_table = "terraform-lock"
     encrypt        = true
-    use_lockfile   = true
   }
 }
