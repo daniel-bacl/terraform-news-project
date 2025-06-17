@@ -69,10 +69,10 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # --------------------
 
 locals {
-  # 실패 쿼리: 순수 Logs Insights 쿼리만 포함 (SOURCE 제거)
-  lambda_fail_query    = "fields @timestamp, @message | filter @message like /실패/ | sort @timestamp desc | limit 20"
-  # 성공 쿼리: 순수 Logs Insights 쿼리만 포함
-  lambda_success_query = "fields @timestamp, @message | filter @message like /성공/ | sort @timestamp desc | limit 20"
+  # 실패 쿼리: @message 필드가 인덱싱되지 않았으므로 filterIndex 사용 (# 필드 인덱스 생성 없이 검색 가능)
+  lambda_fail_query    = "fields @timestamp, @message | filterIndex @message = \"실패\" | sort @timestamp desc | limit 20"
+  # 성공 쿼리: @message 필드가 인덱싱되지 않았으므로 filterIndex 사용
+  lambda_success_query = "fields @timestamp, @message | filterIndex @message = \"성공\" | sort @timestamp desc | limit 20"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
@@ -99,14 +99,14 @@ resource "aws_cloudwatch_dashboard" "main" {
         }
       },
       {
-        type       = "log"  
+        type       = "log"  # 로그 위젯
         x          = 8
         y          = 0
         width      = 8
         height     = 6
         properties = {
-          query         = local.lambda_fail_query        # (1) 순수 query만 사용
-          logGroupNames = ["/aws/lambda/news-lambda-handler"]  # (2) 조회할 로그 그룹 지정
+          logGroupNames = ["/aws/lambda/news-lambda-handler"]  # 조회할 로그 그룹 지정
+          query         = local.lambda_fail_query               # 순수 query만 사용
           region        = var.region
           title         = "Lambda: MAIL_SEND_FAIL 로그"
           view          = "table"
@@ -120,8 +120,8 @@ resource "aws_cloudwatch_dashboard" "main" {
         width      = 8
         height     = 6
         properties = {
-          query         = local.lambda_success_query     # (1) 순수 query만 사용
-          logGroupNames = ["/aws/lambda/news-lambda-handler"]  # (2) 조회할 로그 그룹 지정
+          logGroupNames = ["/aws/lambda/news-lambda-handler"]  # 조회할 로그 그룹 지정
+          query         = local.lambda_success_query            # 순수 query만 사용
           region        = var.region
           title         = "Lambda: MAIL_SEND_SUCCESS 로그"
           view          = "table"
@@ -131,5 +131,4 @@ resource "aws_cloudwatch_dashboard" "main" {
     ]
   })
 }
-
 
