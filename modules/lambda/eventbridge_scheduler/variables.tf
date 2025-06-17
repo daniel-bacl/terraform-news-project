@@ -1,6 +1,9 @@
-variable "rule_name" {}
-variable "description" {}
-variable "schedule_expression" {}
-variable "lambda_function_name" {}
-variable "lambda_function_arn" {}
-variable "target_id" {}
+variable "lambda_schedules" {
+  description = "다중 Lambda 스케줄링 매핑"
+  type = map(object({
+    schedule_expression = string
+    lambda_function_name = string
+    lambda_function_arn  = string
+    target_id            = string
+  }))
+}

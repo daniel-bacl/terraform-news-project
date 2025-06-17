@@ -1,0 +1,102 @@
+{
+  "title": "NewsSubscribe Monitoring Dashboard",
+  "time": { "from": "now-6h", "to": "now" },
+  "panels": [
+    {
+      "type": "timeSeries",
+      "title": "RDS Replica Lag (s)",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "metricName": "ReplicaLag",
+          "namespace": "AWS/RDS",
+          "dimensions": { "DBInstanceIdentifier": "${rds}" },
+          "region": "${region}",
+          "stat": "Maximum",
+          "period": 60,
+          "refId": "RDS_ReplicaLag"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Lambda Errors - sending_news",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "metricName": "Errors",
+          "namespace": "AWS/Lambda",
+          "dimensions": { "FunctionName": "${lambdas.sending_news}" },
+          "region": "${region}",
+          "stat": "Sum",
+          "period": 60,
+          "refId": "LambdaErr_sending"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "메일 전송 성공",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "expression": "SEARCH('{/aws/lambda/${lambdas.sending_news}} \"메일 전송 성공\"', 'Count', 60)",
+          "region": "${region}",
+          "refId": "MailOK_sending"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "메일 전송 실패",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "expression": "SEARCH('{/aws/lambda/${lambdas.sending_news}} \"메일 전송 실패\"', 'Count', 60)",
+          "region": "${region}",
+          "refId": "MailErr_sending"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "Lambda Errors - crawler",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "metricName": "Errors",
+          "namespace": "AWS/Lambda",
+          "dimensions": { "FunctionName": "${lambdas.crawler}" },
+          "region": "${region}",
+          "stat": "Sum",
+          "period": 60,
+          "refId": "LambdaErr_crawler"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "크롤링 성공",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "expression": "SEARCH('{/aws/lambda/${lambdas.crawler}} \"크롤링 성공\"', 'Count', 60)",
+          "region": "${region}",
+          "refId": "CrawlOK"
+        }
+      ]
+    },
+    {
+      "type": "stat",
+      "title": "크롤링 삭제",
+      "datasource": "CloudWatch",
+      "targets": [
+        {
+          "expression": "SEARCH('{/aws/lambda/${lambdas.crawler}} \"크롤링 삭제\"', 'Count', 60)",
+          "region": "${region}",
+          "refId": "CrawlDel"
+        }
+      ]
+    }
+  ]
+}
