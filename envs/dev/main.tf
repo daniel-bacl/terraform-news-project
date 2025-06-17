@@ -185,45 +185,48 @@ module "monitoring" {
 # EKS 클러스터 정보 주입용 데이터 소스
 # ─────────────────────────────
 
-data "aws_eks_cluster" "eks" {
-  name = module.eks.cluster_name
-}
+# data "aws_eks_cluster" "eks" {
+#  name = module.eks.cluster_name
+#}
 
-data "aws_eks_cluster_auth" "eks" {
-  name = module.eks.cluster_name
-}
+# data "aws_eks_cluster_auth" "eks" {
+#  name = module.eks.cluster_name
+#}
 
-provider "helm" {
-  kubernetes {
-    host                   = data.aws_eks_cluster.eks.endpoint
-    cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
-    token                  = data.aws_eks_cluster_auth.eks.token
-  }
-}
+# provider "helm" {
+#   kubernetes {
+#     host                   = data.aws_eks_cluster.eks.endpoint
+#     cluster_ca_certificate = base64decode(data.aws_eks_cluster.eks.certificate_authority[0].data)
+#     token                  = data.aws_eks_cluster_auth.eks.token
+#   }
+# }
 
-resource "helm_release" "kube_prometheus_stack" {
-  name             = "kube-prometheus-stack"
-  repository       = "https://prometheus-community.github.io/helm-charts"
-  chart            = "kube-prometheus-stack"
-  namespace        = "monitoring"
-  create_namespace = true
-  version          = "58.0.1"
-  depends_on = [module.eks]
-}
+# resource "helm_release" "kube_prometheus_stack" {
+#   name             = "kube-prometheus-stack"
+#   repository       = "https://prometheus-community.github.io/helm-charts"
+#   chart            = "kube-prometheus-stack"
+#   namespace        = "monitoring"
+#   create_namespace = true
+#   version          = "58.0.1"
+#   depends_on       = [module.eks]
+# }
 
-resource "helm_release" "grafana" {
-  name        = "grafana"
-  repository  = "https://grafana.github.io/helm-charts"
-  chart       = "grafana"
-  version     = "7.3.7"
-  namespace   = "monitoring"
-  depends_on  = [helm_release.kube_prometheus_stack]
-  set {
-    name  = "adminPassword"
-    value = "YourStrongPassword123!"
-  }
-  set {
-    name  = "service.type"
-    value = "LoadBalancer"
-  }
-}
+# resource "helm_release" "grafana" {
+#   name        = "grafana"
+#   repository  = "https://grafana.github.io/helm-charts"
+#   chart       = "grafana"
+#   version     = "7.3.7"
+#   namespace   = "monitoring"
+#   depends_on  = [helm_release.kube_prometheus_stack"
+
+#   set {
+#     name  = "adminPassword"
+#     value = "YourStrongPassword123!"
+#   }
+
+#   set {
+#     name  = "service.type"
+#     value = "LoadBalancer"
+#   }
+# }
+
