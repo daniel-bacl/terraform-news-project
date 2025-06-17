@@ -48,4 +48,9 @@ resource "aws_db_instance" "this" {
   tags = {
     Name = var.name
   }
+
+  depends_on = [
+    aws_db_parameter_group.timezone,
+    aws_db_subnet_group.this
+  ]
 }
