@@ -26,3 +26,8 @@ variable "docker_image_uri" {
   sensitive = true
   default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler:latest"
 }
+
+variable "grafana_admin_password" {
+  type = string
+  default = "grafana12!@"
+}

@@ -225,7 +225,7 @@ resource "helm_release" "grafana" {
 
   set {
     name  = "adminPassword"
-    value = "YourStrongPassword123!"
+    value = var.grafana_admin_password
   }
 
   set {
