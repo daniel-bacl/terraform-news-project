@@ -194,7 +194,8 @@ module "alb_controller" {
   cluster_name = module.eks.cluster_name
   region       = "ap-northeast-2"
   vpc_id       = module.vpc.vpc_id
-
+  account_id        = var.account_id
+  oidc_provider_url = module.eks.oidc_provider_url
   depends_on = [module.eks]
 }
 

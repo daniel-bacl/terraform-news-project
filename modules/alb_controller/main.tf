@@ -8,7 +8,10 @@ resource "aws_iam_policy" "alb_controller" {
 resource "aws_iam_role" "alb_controller" {
   name = "AmazonEKSLoadBalancerControllerRole"
 
-  assume_role_policy = data.aws_iam_policy_document.assume_role.json
+  assume_role_policy = templatefile("${path.module}/assume-role-policy.json", {
+    account_id        = var.account_id
+    oidc_provider_url = var.oidc_provider_url
+  })
 }
 
 resource "aws_iam_role_policy_attachment" "alb_controller" {

@@ -31,3 +31,7 @@ variable "grafana_admin_password" {
   type = string
   default = "grafana12!@"
 }
+
+variable "account_id" {
+  default = "635140758252"
+}
