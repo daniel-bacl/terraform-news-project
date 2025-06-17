@@ -230,7 +230,7 @@ resource "helm_release" "grafana" {
 
   set {
     name  = "service.type"
-    value = "LoadBalancer"
+    value = "ClusterIP"
   }
 }
 
