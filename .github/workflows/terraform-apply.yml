@@ -1,13 +1,15 @@
 name: Terraform Apply
 
 on:
-  push:
+  pull_request:
     branches: [main]
+    types:
+      - closed  # PR이 '닫힐 때' (merge 포함)
 
 jobs:
   apply:
     name: Terraform Apply
-    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    if: github.event.pull_request.merged == true
     runs-on: ubuntu-latest
     defaults:
       run:
