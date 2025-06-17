@@ -67,65 +67,74 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # --------------------
 # CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
 # --------------------
-
 locals {
-  # 실패 쿼리: @message 필드가 인덱싱되지 않았으므로 filterIndex 사용 (# 필드 인덱스 생성 없이 검색 가능)
-  lambda_fail_query    = "fields @timestamp, @message | filterIndex @message = \"실패\" | sort @timestamp desc | limit 20"
-  # 성공 쿼리: @message 필드가 인덱싱되지 않았으므로 filterIndex 사용
-  lambda_success_query = "fields @timestamp, @message | filterIndex @message = \"성공\" | sort @timestamp desc | limit 20"
+  lambda_fail_query = <<EOT
+fields @timestamp, @message
+| filter @message like '실패'
+| sort @timestamp desc
+| limit 20
+EOT
+
+  lambda_success_query = <<EOT
+fields @timestamp, @message
+| filter @message like '성공'
+| sort @timestamp desc
+| limit 20
+EOT
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  # Dashboard 이름
   dashboard_name = "main-monitoring"
-
-  # Dashboard JSON 생성
   dashboard_body = jsonencode({
     widgets = [
       {
-        type       = "metric"  # 메트릭 위젯
-        x          = 0
-        y          = 0
-        width      = 8
-        height     = 6
-        properties = {
-          metrics = [
-            ["AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.rds_instance_id]
-          ]
-          period = 300
-          stat   = "Average"
-          region = var.region
-          title  = "RDS CPU 사용률"
+        "type": "metric",
+        "x": 0,
+        "y": 0,
+        "width": 8,
+        "height": 6,
+        "properties": {
+          "metrics": [
+            [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.rds_instance_id ]
+          ],
+          "period": 300,
+          "stat": "Average",
+          "region": var.region,
+          "title": "RDS CPU 사용률"
         }
       },
       {
-        type       = "log"  # 로그 위젯
-        x          = 8
-        y          = 0
-        width      = 8
-        height     = 6
-        properties = {
-          logGroupNames = ["/aws/lambda/news-lambda-handler"]  # 조회할 로그 그룹 지정
-          query         = local.lambda_fail_query               # 순수 query만 사용
-          region        = var.region
-          title         = "Lambda: MAIL_SEND_FAIL 로그"
-          view          = "table"
-          stacked       = false
+        "type": "log",
+        "x": 8,
+        "y": 0,
+        "width": 8,
+        "height": 6,
+        "properties": {
+          "query": local.lambda_fail_query,
+          "region": var.region,
+          "title": "Lambda: MAIL_SEND_FAIL 로그",
+          "logGroupNames": [
+            "/aws/lambda/news-lambda-handler"
+          ],
+          "view": "table",
+          "stacked": false
         }
       },
       {
-        type       = "log"
-        x          = 8
-        y          = 6
-        width      = 8
-        height     = 6
-        properties = {
-          logGroupNames = ["/aws/lambda/news-lambda-handler"]  # 조회할 로그 그룹 지정
-          query         = local.lambda_success_query            # 순수 query만 사용
-          region        = var.region
-          title         = "Lambda: MAIL_SEND_SUCCESS 로그"
-          view          = "table"
-          stacked       = false
+        "type": "log",
+        "x": 8,
+        "y": 6,
+        "width": 8,
+        "height": 6,
+        "properties": {
+          "query": local.lambda_success_query,
+          "region": var.region,
+          "title": "Lambda: MAIL_SEND_SUCCESS 로그",
+          "logGroupNames": [
+            "/aws/lambda/news-lambda-handler"
+          ],
+          "view": "table",
+          "stacked": false
         }
       }
     ]
