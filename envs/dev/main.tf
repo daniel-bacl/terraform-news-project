@@ -121,16 +121,6 @@ module "docker_images" {
   docker_image_uri = var.docker_image_uri
 }
 
-module "crawler_schedule" {
-  source = "../../modules/lambda/eventbridge_scheduler"
-
-  rule_name            = "crawler-schedule-rule"
-  description          = "Crawler runs every hour"
-  schedule_expression  = "cron(50 0-23 ? * MON-FRI *)"
-  lambda_function_name = module.docker_images.lambda_function_name
-  lambda_function_arn  = module.docker_images.lambda_function_arn
-  target_id            = "crawler"
-}
 
 module "sending_news" {
   source            = "../../modules/lambda/sending_news"
@@ -157,33 +147,64 @@ module "sending_news" {
   ]
 }
 
-module "sending_news_schedule" {
+module "eventbridge_scheduler" {
   source = "../../modules/lambda/eventbridge_scheduler"
 
-  rule_name            = "sending-news-schedule-rule"
-  description          = "Send news weekdays at 9AM"
-  schedule_expression  = "cron(0 * ? * MON-FRI *)"
-  lambda_function_name = module.sending_news.lambda_function_name
-  lambda_function_arn  = module.sending_news.lambda_function_arn
-  target_id            = "sending-news"
+  lambda_schedules = {
+    sending_news = {
+      schedule_expression = "cron(0 * ? * MON-FRI *)"
+      lambda_function_name = module.sending_news.lambda_function_name
+      lambda_function_arn  = module.sending_news.lambda_function_arn
+      target_id            = "sending-news"
+    }
+    crawler = {
+      schedule_expression = "cron(50 0-23 ? * MON-FRI *)"
+      lambda_function_name = module.docker_images.lambda_function_name
+      lambda_function_arn  = module.docker_images.lambda_function_arn
+      target_id            = "crawler"
+    }
+  }
 }
-
 
 # ─────────────────────────────
 # Monitoring
 # ─────────────────────────────
 
+module "sns" {
+  source     = "../../modules/sns"
+  topic_name = var.alarm_sns_topic_name
+  display_name = "NewsSubscribe Alarms"
+  tags = {
+    Project     = "NewsSubscribe"
+  }
+}
+
+#data "aws_instances" "target_ec2" {
+#  filter {
+#    name   = "tag:Name"
+#    values = ["your-ec2-name-tag"]
+#  }
+#}
+
+
 module "monitoring" {
-  source         = "../../modules/monitoring"
-  region         = "ap-northeast-2"
-  rds_instance_id = module.rds.rds_identifier
-  alert_emails    = [
-    "95eksldpf@gmail.com",
-    "skdurtlxx@gmail.com",
-    "jintonylove@gmail.com",
-    "sunyj1225@gmail.com",
-    "oosuoos@gmail.com"
-  ]
+  source = "../../modules/monitoring"
+
+  alarm_sns_topic_arn = module.sns.sns_topic_arn
+  grafana_workspace_name = "news-subscribe-grafana"
+  grafana_api_key_ttl    = 86400
+  monitoring_role_arn    = module.iam.terraform_monitoring_role_arn
+
+# ec2_instance_id = data.aws_instances.target_ec2.ids[0]
+  rds_instance_id        = module.rds.rds_identifier
+
+  lambda_function_names = {
+    sending_news = module.sending_news.lambda_function_name
+    crawler      = module.docker_images.lambda_function_name
+  }
+
+  subnet_ids         = module.subnet.private_subnet_ids
+  security_group_ids = [module.security_group.app_sg_id]
 }
 
 # ─────────────────────────────
