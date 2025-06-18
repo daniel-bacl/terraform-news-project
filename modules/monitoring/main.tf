@@ -68,76 +68,82 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
 # --------------------
 locals {
-  lambda_fail_query = <<EOT
-fields @timestamp, @message
-| filter @message like '실패'
-| sort @timestamp desc
-| limit 20
-EOT
+  # 멀티라인 로그 쿼리 (정확한 키워드 매칭)
+  lambda_fail_query_raw = trimspace(<<-EOT
+    fields @timestamp, @message
+    | filter @message like /메일 전송 실패/
+    | sort @timestamp desc
+    | limit 20
+  EOT
+  )
 
-  lambda_success_query = <<EOT
-fields @timestamp, @message
-| filter @message like '성공'
-| sort @timestamp desc
-| limit 20
-EOT
+  lambda_success_query_raw = trimspace(<<-EOT
+    fields @timestamp, @message
+    | filter @message like /메일 전송 성공/
+    | sort @timestamp desc
+    | limit 20
+  EOT
+  )
+
+  # JSON 문자열로 인코딩 (줄바꿈 안전)
+  lambda_fail_query    = jsonencode(local.lambda_fail_query_raw)
+  lambda_success_query = jsonencode(local.lambda_success_query_raw)
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "main-monitoring"
-  dashboard_body = jsonencode({
-    widgets = [
-      {
-        "type": "metric",
-        "x": 0,
-        "y": 0,
-        "width": 8,
-        "height": 6,
-        "properties": {
-          "metrics": [
-            [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", var.rds_instance_id ]
-          ],
-          "period": 300,
-          "stat": "Average",
-          "region": var.region,
-          "title": "RDS CPU 사용률"
-        }
-      },
-      {
-        "type": "log",
-        "x": 8,
-        "y": 0,
-        "width": 8,
-        "height": 6,
-        "properties": {
-          "query": local.lambda_fail_query,
-          "region": var.region,
-          "title": "Lambda: MAIL_SEND_FAIL 로그",
-          "logGroupNames": [
-            "/aws/lambda/news-lambda-handler"
-          ],
-          "view": "table",
-          "stacked": false
-        }
-      },
-      {
-        "type": "log",
-        "x": 8,
-        "y": 6,
-        "width": 8,
-        "height": 6,
-        "properties": {
-          "query": local.lambda_success_query,
-          "region": var.region,
-          "title": "Lambda: MAIL_SEND_SUCCESS 로그",
-          "logGroupNames": [
-            "/aws/lambda/news-lambda-handler"
-          ],
-          "view": "table",
-          "stacked": false
-        }
+
+  dashboard_body = <<DASHBOARD
+{
+  "widgets": [
+    {
+      "type": "metric",
+      "x": 0,
+      "y": 0,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "metrics": [
+          [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${var.rds_instance_id}" ]
+        ],
+        "period": 300,
+        "stat": "Average",
+        "region": "${var.region}",
+        "title": "RDS CPU 사용률"
       }
-    ]
-  })
+    },
+    {
+      "type": "log",
+      "x": 8,
+      "y": 0,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "query": ${local.lambda_fail_query},
+        "region": "${var.region}",
+        "title": "Lambda: 메일 전송 실패 로그",
+        "logGroupNames": ["/aws/lambda/news-lambda-handler"],
+        "view": "table",
+        "stacked": false
+      }
+    },
+    {
+      "type": "log",
+      "x": 8,
+      "y": 6,
+      "width": 8,
+      "height": 6,
+      "properties": {
+        "query": ${local.lambda_success_query},
+        "region": "${var.region}",
+        "title": "Lambda: 메일 전송 성공 로그",
+        "logGroupNames": ["/aws/lambda/news-lambda-handler"],
+        "view": "table",
+        "stacked": false
+      }
+    }
+  ]
+}
+DASHBOARD
 }
 
