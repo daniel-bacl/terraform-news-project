@@ -188,7 +188,6 @@ module "monitoring" {
   grafana_api_key_ttl    = 86400
   monitoring_role_arn    = module.iam.terraform_monitoring_role_arn
 
-# ec2_instance_id = data.aws_instances.target_ec2.ids[0]
   rds_instance_id        = module.rds.rds_identifier
 
   lambda_function_names = {
@@ -247,5 +246,3 @@ resource "helm_release" "grafana" {
     value = "ClusterIP"
   }
 }
-
-

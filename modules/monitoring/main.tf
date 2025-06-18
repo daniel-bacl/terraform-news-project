@@ -100,7 +100,7 @@ resource "grafana_dashboard" "overview" {
   provider = grafana.amg
   folder = "NewsSubscribe"
   config_json = templatefile("${path.module}/templates/system_overview.json.tftpl", {
-    region = data.aws_region.current.name,
+    region = "ap-northeast-2",
     rds = var.rds_instance_id,
     lambdas = var.lambda_function_names
   })
