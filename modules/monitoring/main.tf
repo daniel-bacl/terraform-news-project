@@ -46,7 +46,7 @@ resource "grafana_data_source" "cloudwatch" {
   is_default = false
 
   json_data_encoded = jsonencode({
-    default_region = data.aws_region.current.name
+    default_region = "ap-northeast-2"
     auth_type      = "default"
     assume_role_arn = var.monitoring_role_arn 
   })
