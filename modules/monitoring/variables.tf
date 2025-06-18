@@ -12,3 +12,15 @@ variable "alert_emails" {
   type        = list(string)
   default = []
 }
+
+variable "lambda_function_names" {
+  description = "모니터링할 Lambda 함수들의 이름 맵"
+  type        = map(string)
+  default     = {}
+}
+
+variable "grafana_admin_password" {
+  description = "Grafana EC2/Docker 배포 시 admin 비밀번호"
+  type        = string
+  default     = ""
+}
