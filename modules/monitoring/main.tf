@@ -68,26 +68,20 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
 # --------------------
 locals {
-  # 멀티라인 로그 쿼리 (정확한 키워드 매칭)
-  lambda_fail_query_raw = trimspace(<<-EOT
+  # 로그 쿼리 - 줄바꿈 포함 (나중에 대시보드에 삽입 시 줄바꿈 제거)
+  lambda_fail_query = <<-EOT
     fields @timestamp, @message
     | filter @message like /메일 전송 실패/
     | sort @timestamp desc
     | limit 20
   EOT
-  )
 
-  lambda_success_query_raw = trimspace(<<-EOT
+  lambda_success_query = <<-EOT
     fields @timestamp, @message
     | filter @message like /메일 전송 성공/
     | sort @timestamp desc
     | limit 20
   EOT
-  )
-
-  # JSON 문자열로 인코딩 (줄바꿈 안전)
-  lambda_fail_query    = jsonencode(local.lambda_fail_query_raw)
-  lambda_success_query = jsonencode(local.lambda_success_query_raw)
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
@@ -119,7 +113,7 @@ resource "aws_cloudwatch_dashboard" "main" {
       "width": 8,
       "height": 6,
       "properties": {
-        "query": ${local.lambda_fail_query},
+        "query": "${replace(local.lambda_fail_query, "\n", " ")}",
         "region": "${var.region}",
         "title": "Lambda: 메일 전송 실패 로그",
         "logGroupNames": ["/aws/lambda/news-lambda-handler"],
@@ -134,7 +128,7 @@ resource "aws_cloudwatch_dashboard" "main" {
       "width": 8,
       "height": 6,
       "properties": {
-        "query": ${local.lambda_success_query},
+        "query": "${replace(local.lambda_success_query, "\n", " ")}",
         "region": "${var.region}",
         "title": "Lambda: 메일 전송 성공 로그",
         "logGroupNames": ["/aws/lambda/news-lambda-handler"],
