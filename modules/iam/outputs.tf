@@ -9,3 +9,7 @@ output "eks_node_role_arn" {
 output "lambda_role_arn" {
   value = aws_iam_role.lambda_exec_role.arn
 }
+
+output "terraform_monitoring_role_arn" {
+  value = aws_iam_role.terraform_monitoring_role.arn
+}

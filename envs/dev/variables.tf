@@ -27,6 +27,12 @@ variable "docker_image_uri" {
   default = "635140758252.dkr.ecr.ap-northeast-2.amazonaws.com/news-crawler:latest"
 }
 
+variable "alarm_sns_topic_name" {
+  description = "CloudWatch 알람용 SNS Topic 이름"
+  type        = string
+  default     = "news-subscribe-alarm-topic"
+}
+
 variable "grafana_admin_password" {
   type = string
   default = "grafana12!@"
