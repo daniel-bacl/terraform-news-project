@@ -11,14 +11,6 @@ terraform {
   }
 }
 
-provider "aws" {
-  assume_role {
-    role_arn = var.monitoring_role_arn
-  }
-}
-
-data "aws_region" "current" {}
-
 module "grafana" {
   source  = "terraform-aws-modules/managed-service-grafana/aws"
   version = "~> 1.2"
