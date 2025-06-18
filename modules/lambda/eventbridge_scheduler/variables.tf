@@ -1,6 +1,9 @@
-variable "rule_name" {}
-variable "description" {}
-variable "schedule_expression" {}
-variable "lambda_function_name" {}
-variable "lambda_function_arn" {}
-variable "target_id" {}
+variable "lambda_schedules" {
+  type = map(object({
+    description          = optional(string)
+    schedule_expression  = string
+    lambda_function_name = string
+    lambda_function_arn  = string
+    target_id            = string
+  }))
+}

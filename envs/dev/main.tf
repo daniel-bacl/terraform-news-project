@@ -121,17 +121,6 @@ module "docker_images" {
   docker_image_uri = var.docker_image_uri
 }
 
-module "crawler_schedule" {
-  source = "../../modules/lambda/eventbridge_scheduler"
-
-  rule_name            = "crawler-schedule-rule"
-  description          = "Crawler runs every hour"
-  schedule_expression  = "cron(50 0-23 ? * MON-FRI *)"
-  lambda_function_name = module.docker_images.lambda_function_name
-  lambda_function_arn  = module.docker_images.lambda_function_arn
-  target_id            = "crawler"
-}
-
 module "sending_news" {
   source            = "../../modules/lambda/sending_news"
   function_name     = "news-lambda-handler"
@@ -157,26 +146,40 @@ module "sending_news" {
   ]
 }
 
-module "sending_news_schedule" {
+module "eventbridge_scheduler" {
   source = "../../modules/lambda/eventbridge_scheduler"
 
-  rule_name            = "sending-news-schedule-rule"
-  description          = "Send news weekdays at 9AM"
-  schedule_expression  = "cron(0 * ? * MON-FRI *)"
-  lambda_function_name = module.sending_news.lambda_function_name
-  lambda_function_arn  = module.sending_news.lambda_function_arn
-  target_id            = "sending-news"
+  lambda_schedules = {
+    crawler = {
+      description          = "Crawler runs every hour"
+      schedule_expression  = "cron(50 0-23 ? * MON-FRI *)"
+      lambda_function_name = module.docker_images.lambda_function_name
+      lambda_function_arn  = module.docker_images.lambda_function_arn
+      target_id            = "crawler"
+    }
+    sending_news = {
+      description          = "Send news weekdays at 9AM"
+      schedule_expression  = "cron(0 * ? * MON-FRI *)"
+      lambda_function_name = module.sending_news.lambda_function_name
+      lambda_function_arn  = module.sending_news.lambda_function_arn
+      target_id            = "sending-news"
+    }
+  }
 }
-
 
 # ─────────────────────────────
 # Monitoring
 # ─────────────────────────────
 
 module "monitoring" {
-  source         = "../../modules/monitoring"
-  region         = "ap-northeast-2"
-  rds_instance_id = module.rds.rds_identifier
+  source                 = "../../modules/monitoring"
+  region                 = "ap-northeast-2"
+  rds_instance_id        = module.rds.rds_identifier
+  grafana_admin_password = "SuperSecret123"
+  lambda_function_names = {
+    sending_news = module.sending_news.lambda_function_name
+    crawler      = module.docker_images.lambda_function_name
+  }
   alert_emails    = [
     "95eksldpf@gmail.com",
     "skdurtlxx@gmail.com",
@@ -185,6 +188,8 @@ module "monitoring" {
     "oosuoos@gmail.com"
   ]
 }
+
+
 
 # ─────────────────────────────
 # EKS 클러스터 정보 주입용 데이터 소스
@@ -232,6 +237,7 @@ resource "helm_release" "grafana" {
     name  = "service.type"
     value = "ClusterIP"
   }
+   values = [file("${path.module.monitoring}/grafana-values.tpl.yaml")]
 }
 
 

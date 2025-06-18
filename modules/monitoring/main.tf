@@ -1,4 +1,31 @@
 # --------------------
+# Grafana 설정용
+# --------------------
+
+locals {
+  grafana_values = templatefile(
+    "${path.module}/grafana-values.tpl.yaml",
+    {
+      admin_password      = var.grafana_admin_password
+      region              = var.region
+      rds                 = var.rds_instance_id
+      lambdas             = var.lambda_function_names
+    }
+  )
+}
+
+resource "helm_release" "grafana" {
+  name             = "grafana"
+  repository       = "https://grafana.github.io/helm-charts"
+  chart            = "grafana"
+  version          = "7.3.7"
+  namespace        = "monitoring"
+  create_namespace = true
+
+  values = [local.grafana_values]
+}
+
+# --------------------
 # SNS (알림 전송)
 # --------------------
 resource "aws_sns_topic" "monitoring_alerts" {
