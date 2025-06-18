@@ -32,3 +32,12 @@ variable "alarm_sns_topic_name" {
   type        = string
   default     = "news-subscribe-alarm-topic"
 }
+
+variable "grafana_admin_password" {
+  type = string
+  default = "grafana12!@"
+}
+
+variable "account_id" {
+  default = "635140758252"
+}
