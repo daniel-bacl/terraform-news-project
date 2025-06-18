@@ -179,13 +179,6 @@ module "sns" {
   }
 }
 
-#data "aws_instances" "target_ec2" {
-#  filter {
-#    name   = "tag:Name"
-#    values = ["your-ec2-name-tag"]
-#  }
-#}
-
 
 module "monitoring" {
   source = "../../modules/monitoring"

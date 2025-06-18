@@ -60,23 +60,6 @@ resource "grafana_data_source" "cloudwatch" {
   })
 }
 
-# CloudWatch Alarm - EC2 CPU
-#resource "aws_cloudwatch_metric_alarm" "ec2_cpu" {
-#  alarm_name          = "ec2-cpu-utilization-high"
-#  comparison_operator = "GreaterThanThreshold"
-#  evaluation_periods  = 2
-#  threshold           = 80
-#  metric_name         = "CPUUtilization"
-#  namespace           = "AWS/EC2"
-#  period              = 60
-#  statistic           = "Average"
-#  dimensions = {
-#    InstanceId = var.ec2_instance_id
-#  }
-#  alarm_description = "EC2 CPUUtilization > 80%"
-#  alarm_actions     = [var.alarm_sns_topic_arn]
-#}
-
 # CloudWatch Alarm - RDS Replica Lag
 resource "aws_cloudwatch_metric_alarm" "rds_lag" {
   alarm_name = "rds-replica-lag"
