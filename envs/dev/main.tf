@@ -189,8 +189,6 @@ module "monitoring" {
   ]
 }
 
-
-
 # ─────────────────────────────
 # EKS 클러스터 정보 주입용 데이터 소스
 # ─────────────────────────────
@@ -237,7 +235,4 @@ resource "helm_release" "grafana" {
     name  = "service.type"
     value = "ClusterIP"
   }
-   values = [file("${path.module.monitoring}/grafana-values.tpl.yaml")]
 }
-
-

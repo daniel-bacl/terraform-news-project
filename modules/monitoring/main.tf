@@ -3,15 +3,14 @@
 # --------------------
 
 locals {
-  grafana_values = templatefile(
-    "${path.module}/grafana-values.tpl.yaml",
-    {
-      admin_password      = var.grafana_admin_password
-      region              = var.region
-      rds                 = var.rds_instance_id
-      lambdas             = var.lambda_function_names
+  grafana_values = templatefile("${path.module}/grafana-values.tpl.yaml", {
+    region = var.region
+    rds    = var.rds_instance_id
+    lambdas = {
+      sending_news = var.lambda_function_names["sending_news"]
+      crawler      = var.lambda_function_names["crawler"]
     }
-  )
+  })
 }
 
 resource "helm_release" "grafana" {
@@ -22,7 +21,17 @@ resource "helm_release" "grafana" {
   namespace        = "monitoring"
   create_namespace = true
 
-  values = [local.grafana_values]
+  values = [ local.grafana_values ]
+
+  set {
+    name  = "adminPassword"
+    value = var.grafana_admin_password
+  }
+
+  set {
+    name  = "service.type"
+    value = "ClusterIP"
+  }
 }
 
 # --------------------
