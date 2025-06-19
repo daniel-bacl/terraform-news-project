@@ -24,3 +24,21 @@ variable "grafana_admin_password" {
   type        = string
   default     = ""
 }
+
+variable "grafana_service_account_namespace" {
+  type    = string
+  default = "monitoring"
+}
+
+variable "grafana_service_account_name" {
+  type    = string
+  default = "grafana"
+}
+
+variable "eks_oidc_provider_arn" {
+  type = string
+}
+
+variable "eks_oidc_provider_url" {
+  type = string
+}
