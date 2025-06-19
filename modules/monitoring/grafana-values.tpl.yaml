@@ -134,4 +134,4 @@ dashboards:
         }
     kubelet-dashboard:
       json: |
-        {{ indent 8 kubelet_json }}
+        ${kubelet_json}
