@@ -1,3 +1,16 @@
+apiVersion: 1
+
+datasources:
+  datasources.yaml:
+    apiVersion: 1
+    datasources:
+      - name: CloudWatch                     # 이 이름이 대시보드에서 "datasource": "CloudWatch"와 일치해야 함!
+        type: cloudwatch
+        access: proxy
+        jsonData:
+          defaultRegion: ap-northeast-2      # 필요한 AWS 리전
+          authType: default                  # EKS라면 IAM Role, EC2라면 인스턴스 프로파일 자동 사용
+
 dashboardProviders:
   dashboardproviders.yaml:
     apiVersion: 1
