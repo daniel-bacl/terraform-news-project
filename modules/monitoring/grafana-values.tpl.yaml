@@ -11,7 +11,7 @@ datasources:
         isDefault: true
         jsonData:
           authType: ec2_iam_role
-          defaultRegion: ${region}
+          defaultRegion: ap-northeast-2
 
 # 대시보드 자동 로드 및 패널 정의
 dashboardProviders:
@@ -43,8 +43,8 @@ dashboards:
                 {
                   "metricName": "ReplicaLag",
                   "namespace": "AWS/RDS",
-                  "dimensions": { "DBInstanceIdentifier": "${rds}" },
-                  "region": "${region}",
+                  "dimensions": { "DBInstanceIdentifier": "news-rds" },
+                  "region": "ap-northeast-2",
                   "stat": "Maximum",
                   "period": 60,
                   "refId": "RDS_ReplicaLag"
@@ -59,8 +59,8 @@ dashboards:
                 {
                   "metricName": "Errors",
                   "namespace": "AWS/Lambda",
-                  "dimensions": { "FunctionName": "${lambdas.sending_news}" },
-                  "region": "${region}",
+                  "dimensions": { "FunctionName": "news-lambda-handler" },
+                  "region": "ap-northeast-2",
                   "stat": "Sum",
                   "period": 60,
                   "refId": "LambdaErr_sending"
@@ -73,9 +73,9 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/${lambdas.sending_news}} \"메일 전송 성공\"', 'Count', 60)",
-                  "region": "${region}",
-                  "refId": "MailOK_sending"
+                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} \"메일 전송 성공\"', 'Count', 60)",
+                  "refId": "MailOK_sending",
+                  "region": "ap-northeast-2"
                 }
               ]
             },
@@ -85,9 +85,9 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/${lambdas.sending_news}} \"메일 전송 실패\"', 'Count', 60)",
-                  "region": "${region}",
-                  "refId": "MailErr_sending"
+                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} \"메일 전송 실패\"', 'Count', 60)",
+                  "refId": "MailErr_sending",
+                  "region": "ap-northeast-2"
                 }
               ]
             },
@@ -99,8 +99,8 @@ dashboards:
                 {
                   "metricName": "Errors",
                   "namespace": "AWS/Lambda",
-                  "dimensions": { "FunctionName": "${lambdas.crawler}" },
-                  "region": "${region}",
+                  "dimensions": { "FunctionName": "news-crawler-lambda" },
+                  "region": "ap-northeast-2",
                   "stat": "Sum",
                   "period": 60,
                   "refId": "LambdaErr_crawler"
@@ -113,9 +113,9 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/${lambdas.crawler}} \"크롤링 성공\"', 'Count', 60)",
-                  "region": "${region}",
-                  "refId": "CrawlOK"
+                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} \"크롤링 성공\"', 'Count', 60)",
+                  "refId": "CrawlOK",
+                  "region": "ap-northeast-2"
                 }
               ]
             },
@@ -125,11 +125,14 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/${lambdas.crawler}} \"크롤링 삭제\"', 'Count', 60)",
-                  "region": "${region}",
-                  "refId": "CrawlDel"
+                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} \"크롤링 삭제\"', 'Count', 60)",
+                  "refId": "CrawlDel",
+                  "region": "ap-northeast-2"
                 }
               ]
             }
           ]
         }
+    kubelet-dashboard:
+      json: |
+        {{ indent 8 (file("grafana_dashboards/kubelet.json")) }}
