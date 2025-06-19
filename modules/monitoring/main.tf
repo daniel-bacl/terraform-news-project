@@ -3,7 +3,7 @@
 # --------------------
 
 locals {
-  kubelet_dashboard_json = file("${path.module}/grafana_dashboard/kubelet.json")
+  kubelet_dashboard_json = jsonencode(jsondecode(file("${path.module}/grafana_dashboard/kubelet.json")))
 
   grafana_values = templatefile("${path.module}/grafana-values.tpl.yaml", {
     region = var.region
@@ -12,7 +12,7 @@ locals {
       sending_news = var.lambda_function_names["sending_news"]
       crawler      = var.lambda_function_names["crawler"]
     }
-    kubelet_json = indent(8, local.kubelet_dashboard_json)
+    kubelet_json = local.kubelet_dashboard_json
   })
 }
 
