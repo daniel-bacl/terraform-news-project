@@ -32,6 +32,16 @@ resource "helm_release" "grafana" {
     name  = "service.type"
     value = "ClusterIP"
   }
+
+  set {
+    name  = "serviceAccount.name"
+    value = var.grafana_service_account_name
+  }
+
+  set {
+    name  = "serviceAccount.create"
+    value = "false"
+  }
 }
 
 # --------------------

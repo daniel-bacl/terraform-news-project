@@ -187,6 +187,12 @@ module "monitoring" {
     "sunyj1225@gmail.com",
     "oosuoos@gmail.com"
   ]
+  
+  eks_oidc_provider_arn = module.eks.oidc_provider_arn
+  eks_oidc_provider_url = module.eks.oidc_provider_url
+
+  grafana_service_account_name      = "grafana"
+  grafana_service_account_namespace = "monitoring"
 }
 
 # ─────────────────────────────
