@@ -124,57 +124,10 @@ locals {
 
 resource "aws_cloudwatch_dashboard" "main" {
   dashboard_name = "main-monitoring"
-
-  dashboard_body = <<DASHBOARD
-{
-  "widgets": [
-    {
-      "type": "metric",
-      "x": 0,
-      "y": 0,
-      "width": 8,
-      "height": 6,
-      "properties": {
-        "metrics": [
-          [ "AWS/RDS", "CPUUtilization", "DBInstanceIdentifier", "${var.rds_instance_id}" ]
-        ],
-        "period": 300,
-        "stat": "Average",
-        "region": "${var.region}",
-        "title": "RDS CPU 사용률"
-      }
-    },
-    {
-      "type": "log",
-      "x": 8,
-      "y": 0,
-      "width": 8,
-      "height": 6,
-      "properties": {
-        "query": "${local.lambda_fail_query}",
-        "region": "${var.region}",
-        "title": "Lambda: 메일 전송 실패 로그",
-        "logGroupNames": ["/aws/lambda/news-lambda-handler"],
-        "view": "table",
-        "stacked": false
-      }
-    },
-    {
-      "type": "log",
-      "x": 8,
-      "y": 6,
-      "width": 8,
-      "height": 6,
-      "properties": {
-        "query": "${local.lambda_success_query}",
-        "region": "${var.region}",
-        "title": "Lambda: 메일 전송 성공 로그",
-        "logGroupNames": ["/aws/lambda/news-lambda-handler"],
-        "view": "table",
-        "stacked": false
-      }
-    }
-  ]
-}
-DASHBOARD
+  dashboard_body = templatefile("${path.module}/dashboard_body.json.tmpl", {
+    rds_instance_id     = var.rds_instance_id
+    region              = var.region
+    lambda_fail_query   = local.lambda_fail_query
+    lambda_success_query = local.lambda_success_query
+  })
 }
