@@ -36,6 +36,7 @@ dashboards:
     news-subscribe-dashboard:
       json: |
         {
+          "uid": "news-subscribe-dashboard"
           "title": "NewsSubscribe Monitoring Dashboard",
           "time": { "from": "now-6h", "to": "now" },
           "panels": [
