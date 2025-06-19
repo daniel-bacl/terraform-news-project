@@ -199,19 +199,6 @@ module "monitoring" {
 # EKS 클러스터 정보 주입용 데이터 소스
 # ─────────────────────────────
 
-provider "helm" {
-  kubernetes = {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_ca_data)
-
-    exec = {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-    }
-  }
-}
-
 resource "helm_release" "kube_prometheus_stack" {
   name             = "kube-prometheus-stack"
   repository       = "https://prometheus-community.github.io/helm-charts"
