@@ -216,23 +216,3 @@ resource "helm_release" "kube_prometheus_stack" {
 
   depends_on = [module.eks]
 }
-
-resource "helm_release" "grafana" {
-  name       = "grafana"
-  repository = "https://grafana.github.io/helm-charts"
-  chart      = "grafana"
-  version    = "7.3.7"
-  namespace  = "monitoring"
-
-  depends_on = [helm_release.kube_prometheus_stack]
-
-  set {
-    name  = "adminPassword"
-    value = var.grafana_admin_password
-  }
-
-  set {
-    name  = "service.type"
-    value = "ClusterIP"
-  }
-}

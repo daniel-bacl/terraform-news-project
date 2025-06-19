@@ -1,6 +1,5 @@
 #// 변수 정의는 필요 시 여기에 추가하세요.
 
-
 variable "lambda_env" {
   type = map(string)
   default = {
@@ -29,7 +28,7 @@ variable "docker_image_uri" {
 
 variable "grafana_admin_password" {
   type = string
-  default = "grafana12!@"
+  default = "SuperSecret123"
 }
 
 variable "account_id" {
