@@ -9,7 +9,6 @@ datasources:
         access: proxy
         isDefault: true
         jsonData:
-          authType: ec2_iam_role
           defaultRegion: ap-northeast-2
       - name: Prometheus
         uid: prometheus
