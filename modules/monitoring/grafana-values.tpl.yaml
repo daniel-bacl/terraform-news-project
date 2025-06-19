@@ -1,4 +1,4 @@
-# CloudWatch Datasource 정의 추가
+# CloudWatch + Prometheus Datasource 정의
 datasources:
   datasources.yaml:
     apiVersion: 1
@@ -11,6 +11,12 @@ datasources:
         jsonData:
           authType: ec2_iam_role
           defaultRegion: ap-northeast-2
+      - name: Prometheus
+        uid: prometheus
+        type: prometheus
+        access: proxy
+        url: http://kube-prometheus-stack-prometheus.monitoring.svc.cluster.local:9090
+        isDefault: false
 
 # 대시보드 자동 로드 및 패널 정의
 dashboardProviders:
