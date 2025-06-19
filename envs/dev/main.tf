@@ -187,7 +187,7 @@ module "monitoring" {
     "sunyj1225@gmail.com",
     "oosuoos@gmail.com"
   ]
-  
+
   eks_oidc_provider_arn = module.eks.oidc_provider_arn
   eks_oidc_provider_url = module.eks.oidc_provider_url
 
@@ -200,11 +200,11 @@ module "monitoring" {
 # ─────────────────────────────
 
 provider "helm" {
-  kubernetes {
+  kubernetes = {
     host                   = module.eks.cluster_endpoint
     cluster_ca_certificate = base64decode(module.eks.cluster_ca_data)
 
-    exec {
+    exec = {
       api_version = "client.authentication.k8s.io/v1beta1"
       command     = "aws"
       args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
