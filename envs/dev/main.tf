@@ -187,24 +187,17 @@ module "monitoring" {
     "sunyj1225@gmail.com",
     "oosuoos@gmail.com"
   ]
+
+  eks_oidc_provider_arn = module.eks.oidc_provider_arn
+  eks_oidc_provider_url = module.eks.oidc_provider_url
+
+  grafana_service_account_name      = "grafana"
+  grafana_service_account_namespace = "monitoring"
 }
 
 # ─────────────────────────────
 # EKS 클러스터 정보 주입용 데이터 소스
 # ─────────────────────────────
-
-provider "helm" {
-  kubernetes {
-    host                   = module.eks.cluster_endpoint
-    cluster_ca_certificate = base64decode(module.eks.cluster_ca_data)
-
-    exec {
-      api_version = "client.authentication.k8s.io/v1beta1"
-      command     = "aws"
-      args        = ["eks", "get-token", "--cluster-name", module.eks.cluster_name]
-    }
-  }
-}
 
 resource "helm_release" "kube_prometheus_stack" {
   name             = "kube-prometheus-stack"

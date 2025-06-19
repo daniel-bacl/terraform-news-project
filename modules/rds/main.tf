@@ -25,6 +25,21 @@ resource "aws_db_parameter_group" "timezone" {
     name  = "collation_server"
     value = "utf8mb4_unicode_ci"
   }
+
+  parameter {
+    name  = "character_set_client"
+    value = "utf8mb4"
+  }
+
+  parameter {
+    name  = "character_set_connection"
+    value = "utf8mb4"
+  }
+
+  parameter {
+    name  = "character_set_results"
+    value = "utf8mb4"
+  }
 }
 
 resource "aws_db_instance" "this" {

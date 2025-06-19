@@ -14,7 +14,9 @@ locals {
 }
 
 resource "helm_release" "grafana" {
-  name             = "grafana"
+  provider = helm
+
+  name             = "grafana-monitoring"
   repository       = "https://grafana.github.io/helm-charts"
   chart            = "grafana"
   version          = "7.3.7"
@@ -23,15 +25,24 @@ resource "helm_release" "grafana" {
 
   values = [ local.grafana_values ]
 
-  set {
-    name  = "adminPassword"
-    value = var.grafana_admin_password
-  }
-
-  set {
-    name  = "service.type"
-    value = "ClusterIP"
-  }
+  set = [
+    {
+      name  = "adminPassword"
+      value = var.grafana_admin_password
+    },
+    {
+      name  = "service.type"
+      value = "ClusterIP"
+    },
+    {
+      name  = "serviceAccount.name"
+      value = var.grafana_service_account_name
+    },
+    {
+      name  = "serviceAccount.create"
+      value = "false"
+    }
+  ]
 }
 
 # --------------------
