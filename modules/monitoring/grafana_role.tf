@@ -59,6 +59,8 @@ resource "aws_iam_role_policy_attachment" "grafana_attach" {
 
 # Grafana ServiceAccount (Helm과 연동하려면 이 이름 지정 필요)
 resource "kubernetes_service_account" "grafana" {
+  provider = kubernetes
+  
   metadata {
     name      = var.grafana_service_account_name
     namespace = var.grafana_service_account_namespace
