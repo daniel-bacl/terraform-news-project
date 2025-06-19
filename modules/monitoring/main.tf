@@ -28,24 +28,25 @@ resource "helm_release" "grafana" {
 
   values = [ local.grafana_values ]
 
-  set = [
-    {
-      name  = "adminPassword"
-      value = var.grafana_admin_password
-    },
-    {
-      name  = "service.type"
-      value = "ClusterIP"
-    },
-    {
-      name  = "serviceAccount.name"
-      value = var.grafana_service_account_name
-    },
-    {
-      name  = "serviceAccount.create"
-      value = "false"
-    }
-  ]
+  set{
+    name  = "adminPassword"
+    value = var.grafana_admin_password
+  }
+
+  set{
+    name  = "service.type"
+    value = "ClusterIP"
+  }
+  
+  set{
+    name  = "serviceAccount.name"
+    value = var.grafana_service_account_name
+  }
+
+  set{
+    name  = "serviceAccount.create"
+    value = "false"
+  }
 }
 
 # --------------------
