@@ -44,6 +44,7 @@ dashboards:
             {
               "type": "timeseries",
               "title": "RDS Replica Lag (s)",
+              "description": "RDS ReplicaLag은 장애 발생 시에만 표시됩니다.",
               "datasource": "CloudWatch",
               "targets": [
                 {
@@ -59,17 +60,33 @@ dashboards:
             },
             {
               "type": "stat",
-              "title": "Lambda Errors - sending_news",
+              "title": "RDS CPUUtilization (%)",
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "metricName": "Errors",
-                  "namespace": "AWS/Lambda",
-                  "dimensions": { "FunctionName": "news-lambda-handler" },
+                  "metricName": "CPUUtilization",
+                  "namespace": "AWS/RDS",
+                  "dimensions": { "DBInstanceIdentifier": "news-rds" },
                   "region": "ap-northeast-2",
-                  "stat": "Sum",
+                  "stat": "Average",
                   "period": 60,
-                  "refId": "LambdaErr_sending"
+                  "refId": "RDS_CPU"
+                }
+              ]
+            },
+            {
+              "type": "stat",
+              "title": "RDS DatabaseConnections",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "metricName": "DatabaseConnections",
+                  "namespace": "AWS/RDS",
+                  "dimensions": { "DBInstanceIdentifier": "news-rds" },
+                  "region": "ap-northeast-2",
+                  "stat": "Average",
+                  "period": 60,
+                  "refId": "RDS_Conn"
                 }
               ]
             },
@@ -79,7 +96,7 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} \"메일 전송 성공\"', 'Count', 60)",
+                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} 메일 전송 성공', 'Count', 60)",
                   "refId": "MailOK_sending",
                   "region": "ap-northeast-2"
                 }
@@ -91,7 +108,7 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} \"메일 전송 실패\"', 'Count', 60)",
+                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} 메일 전송 실패', 'Count', 60)",
                   "refId": "MailErr_sending",
                   "region": "ap-northeast-2"
                 }
@@ -119,7 +136,7 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} \"크롤링 성공\"', 'Count', 60)",
+                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} 크롤링 성공', 'Count', 60)",
                   "refId": "CrawlOK",
                   "region": "ap-northeast-2"
                 }
@@ -131,7 +148,7 @@ dashboards:
               "datasource": "CloudWatch",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} \"크롤링 삭제\"', 'Count', 60)",
+                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} 크롤링 삭제', 'Count', 60)",
                   "refId": "CrawlDel",
                   "region": "ap-northeast-2"
                 }
