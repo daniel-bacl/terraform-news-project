@@ -12,7 +12,7 @@ locals {
       sending_news = var.lambda_function_names["sending_news"]
       crawler      = var.lambda_function_names["crawler"]
     }
-    kubelet_json = local.kubelet_dashboard_json
+    kubelet_json = indent(8, local.kubelet_dashboard_json)
   })
 }
 
