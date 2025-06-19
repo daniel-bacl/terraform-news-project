@@ -35,7 +35,7 @@ dashboards:
           "time": { "from": "now-6h", "to": "now" },
           "panels": [
             {
-              "type": "timeSeries",
+              "type": "timeseries",
               "title": "RDS Replica Lag (s)",
               "datasource": "CloudWatch",
               "targets": [
@@ -134,4 +134,4 @@ dashboards:
         }
     kubelet-dashboard:
       json: |
-        {{ indent 8 (file("grafana_dashboards/kubelet.json")) }}
+        ${kubelet_json}
