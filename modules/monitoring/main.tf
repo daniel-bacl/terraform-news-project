@@ -3,6 +3,8 @@
 # --------------------
 
 locals {
+  kubelet_dashboard_json = file("${path.module}/grafana_dashboard/kubelet.json")
+
   grafana_values = templatefile("${path.module}/grafana-values.tpl.yaml", {
     region = var.region
     rds    = var.rds_instance_id
@@ -10,6 +12,7 @@ locals {
       sending_news = var.lambda_function_names["sending_news"]
       crawler      = var.lambda_function_names["crawler"]
     }
+    kubelet_json = local.kubelet_dashboard_json
   })
 }
 
