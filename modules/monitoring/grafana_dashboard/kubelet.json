@@ -321,7 +321,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "process_resident_memory_bytes{cluster=\"$cluster\",job=\"kubelet\", metrics_path=\"/metrics\",instance=~\"$instance\"}",
+          "expr": "(1 - (node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes)) * 100",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
@@ -330,7 +330,7 @@
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Memory",
+      "title": "Memory usage",
       "tooltip": {
         "shared": true,
         "sort": 0,
@@ -407,7 +407,7 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "rate(process_cpu_seconds_total{cluster=\"$cluster\",job=\"kubelet\", metrics_path=\"/metrics\",instance=~\"$instance\"}[$__rate_interval])",
+          "expr": "rate(process_cpu_seconds_total{cluster=\"$cluster\",job=\"kubelet\", metrics_path=\"/metrics\",instance=~\"$instance\"}[$__rate_interval]) * 100",
           "format": "time_series",
           "intervalFactor": 2,
           "legendFormat": "{{instance}}",
