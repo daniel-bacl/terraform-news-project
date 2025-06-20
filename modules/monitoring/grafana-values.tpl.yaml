@@ -72,7 +72,26 @@ dashboards:
                   "period": 60,
                   "refId": "RDS_CPU"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 80, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "stat",
@@ -88,7 +107,26 @@ dashboards:
                   "period": 60,
                   "refId": "RDS_Conn"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1000, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "stat",
@@ -100,7 +138,26 @@ dashboards:
                   "refId": "MailOK_sending",
                   "region": "ap-northeast-2"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "stat",
@@ -112,7 +169,26 @@ dashboards:
                   "refId": "MailErr_sending",
                   "region": "ap-northeast-2"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "stat",
@@ -128,7 +204,26 @@ dashboards:
                   "period": 60,
                   "refId": "LambdaErr_crawler"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "stat",
@@ -140,7 +235,26 @@ dashboards:
                   "refId": "CrawlOK",
                   "region": "ap-northeast-2"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "stat",
@@ -152,10 +266,30 @@ dashboards:
                   "refId": "CrawlDel",
                   "region": "ap-northeast-2"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             }
           ]
         }
+
     kubelet-dashboard:
       json: |
         ${kubelet_json}
