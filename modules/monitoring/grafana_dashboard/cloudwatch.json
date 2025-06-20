@@ -3,128 +3,121 @@
   "title": "NewsSubscribe Monitoring Dashboard",
   "time": { "from": "now-6h", "to": "now" },
   "panels": [
-    {
-      "type": "gauge",
-      "title": "RDS Replica Lag (s)",
-      "description": "RDS ReplicaLag은 장애 발생 시에만 표시됩니다.",
+       {
       "datasource": "CloudWatch",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 13,
+        "x": 0,
+        "y": 0
+      },
+      "id": 13,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "Numeric Fields",
+          "values": false
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
       "targets": [
         {
-          "metricName": "ReplicaLag",
-          "namespace": "AWS/RDS",
-          "dimensions": { "DBInstanceIdentifier": "news-rds" },
-          "region": "ap-northeast-2",
-          "stat": "Maximum",
-          "statistic": "Maximum",
-          "period": "auto",
-          "refId": "RDS_ReplicaLag",
-          "queryMode": "Metrics",
-          "matchExact": false,
+          "dimensions": {
+            "DBInstanceIdentifier": "news-rds"
+          },
           "expression": "",
           "id": "",
           "label": "",
-          "metricQueryType": 0,
-          "metricEditorMode": 0
-        }
-      ]
-    },
-    {
-      "type": "timeseries",
-      "title": "RDS CPUUtilization (%)",
-      "datasource": "CloudWatch",
-      "targets": [
-        {
+          "matchExact": false,
+          "metricEditorMode": 0,
           "metricName": "CPUUtilization",
+          "metricQueryType": 0,
           "namespace": "AWS/RDS",
-          "dimensions": { "DBInstanceIdentifier": "news-rds" },
-          "region": "ap-northeast-2",
-          "stat": "Average",
-          "statistic": "Average",
           "period": "auto",
+          "queryMode": "Metrics",
           "refId": "RDS_CPU",
-          "queryMode": "Metrics",
-          "matchExact": false,
-          "expression": "",
-          "id": "",
-          "label": "",
-          "metricQueryType": 0,
-          "metricEditorMode": 0
-        }
-      ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": "Numeric Fields"
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "value": null, "color": "green" },
-              { "value": 80, "color": "red" }
-            ]
-          }
-        },
-        "overrides": []
-      }
-    },
-    {
-      "type": "gauge",
-      "title": "RDS DatabaseConnections",
-      "datasource": "CloudWatch",
-      "targets": [
-        {
-          "metricName": "DatabaseConnections",
-          "namespace": "AWS/RDS",
-          "dimensions": { "DBInstanceIdentifier": "news-rds" },
           "region": "ap-northeast-2",
           "stat": "Average",
-          "statistic": "Average",
-          "period": "auto",
-          "refId": "RDS_Conn",
-          "queryMode": "Metrics",
-          "matchExact": false,
-          "expression": "",
-          "id": "",
-          "label": "",
-          "metricQueryType": 0,
-          "metricEditorMode": 0
+          "statistic": "Average"
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": "Numeric Fields"
-        }
-      },
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "value": null, "color": "green" },
-              { "value": 1000, "color": "red" }
-            ]
-          }
-        },
-        "overrides": []
-      }
+      "title": "RDS CPUUtilization (%)",
+      "type": "timeseries"
     },
     {
-      "type": "logs",
-      "title": "메일 전송 성공",
       "datasource": {
         "type": "cloudwatch",
         "uid": "CloudWatch"
       },
       "gridPos": {
-        "h": 5,
-        "w": 13,
-        "x": 10,
+        "h": 6,
+        "w": 11,
+        "x": 13,
         "y": 0
       },
       "id": 4,
@@ -132,16 +125,18 @@
         "dedupStrategy": "none",
         "enableLogDetails": true,
         "prettifyLogMessage": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "Numeric Fields",
+          "values": false
+        },
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": false,
         "sortOrder": "Descending",
-        "wrapLogMessage": false,
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": "Numeric Fields"
-        }
+        "wrapLogMessage": false
       },
       "pluginVersion": "10.4.0",
       "targets": [
@@ -175,47 +170,37 @@
           "statsGroups": []
         }
       ],
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "value": null, "color": "green" },
-              { "value": 1, "color": "red" }
-            ]
-          }
-        },
-        "overrides": []
-      }
+      "title": "메일 전송 성공",
+      "type": "logs"
     },
     {
-      "type": "logs",
-      "title": "메일 전송 실패",
       "datasource": {
         "type": "cloudwatch",
         "uid": "CloudWatch"
       },
       "gridPos": {
-        "h": 3,
-        "w": 13,
-        "x": 10,
-        "y": 5
+        "h": 6,
+        "w": 11,
+        "x": 13,
+        "y": 6
       },
       "id": 5,
       "options": {
         "dedupStrategy": "none",
         "enableLogDetails": true,
         "prettifyLogMessage": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "Numeric Fields",
+          "values": false
+        },
         "showCommonLabels": false,
         "showLabels": false,
         "showTime": false,
         "sortOrder": "Descending",
-        "wrapLogMessage": false,
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": "Numeric Fields"
-        }
+        "wrapLogMessage": false
       },
       "pluginVersion": "10.4.0",
       "targets": [
@@ -249,29 +234,126 @@
           "statsGroups": []
         }
       ],
+      "title": "메일 전송 실패",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CloudWatch"
+      },
       "fieldConfig": {
         "defaults": {
+          "color": {
+            "mode": "palette-classic"
+          },
+          "custom": {
+            "axisBorderShow": false,
+            "axisCenteredZero": false,
+            "axisColorMode": "text",
+            "axisLabel": "",
+            "axisPlacement": "auto",
+            "barAlignment": 0,
+            "drawStyle": "line",
+            "fillOpacity": 0,
+            "gradientMode": "none",
+            "hideFrom": {
+              "legend": false,
+              "tooltip": false,
+              "viz": false
+            },
+            "insertNulls": false,
+            "lineInterpolation": "linear",
+            "lineWidth": 1,
+            "pointSize": 5,
+            "scaleDistribution": {
+              "type": "linear"
+            },
+            "showPoints": "auto",
+            "spanNulls": false,
+            "stacking": {
+              "group": "A",
+              "mode": "none"
+            },
+            "thresholdsStyle": {
+              "mode": "off"
+            }
+          },
+          "mappings": [],
           "thresholds": {
             "mode": "absolute",
             "steps": [
-              { "value": null, "color": "green" },
-              { "value": 1, "color": "red" }
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1000
+              }
             ]
           }
         },
         "overrides": []
-      }
-    },
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 13,
+        "x": 0,
+        "y": 7
+      },
+      "id": 14,
+      "options": {
+        "legend": {
+          "calcs": [],
+          "displayMode": "list",
+          "placement": "bottom",
+          "showLegend": true
+        },
+        "tooltip": {
+          "mode": "single",
+          "sort": "none"
+        }
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
         {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CloudWatch"
+          },
+          "dimensions": {
+            "DBInstanceIdentifier": "news-rds"
+          },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "FreeableMemory",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "auto",
+          "queryMode": "Metrics",
+          "refId": "RDS_FreeableMemory",
+          "region": "ap-northeast-2",
+          "stat": "Average",
+          "statistic": "Average"
+        }
+      ],
+      "title": "RDS FreeableMemory",
+      "type": "timeseries"
+    },
+    {
       "datasource": {
         "type": "cloudwatch",
         "uid": "CloudWatch"
       },
       "gridPos": {
         "h": 5,
-        "w": 13,
-        "x": 11,
-        "y": 8
+        "w": 11,
+        "x": 13,
+        "y": 12
       },
       "id": 10,
       "options": {
@@ -326,15 +408,164 @@
       "type": "logs"
     },
     {
+      "datasource": "CloudWatch",
+      "description": "RDS ReplicaLag은 장애 발생 시에만 표시됩니다.",
+      "fieldConfig": {
+        "defaults": {
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 6,
+        "x": 0,
+        "y": 14
+      },
+      "id": 12,
+      "options": {
+        "minVizHeight": 75,
+        "minVizWidth": 75,
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showThresholdLabels": false,
+        "showThresholdMarkers": true,
+        "sizing": "auto"
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "dimensions": {
+            "DBInstanceIdentifier": "news-rds"
+          },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "ReplicaLag",
+          "metricQueryType": 0,
+          "namespace": "AWS/RDS",
+          "period": "auto",
+          "queryMode": "Metrics",
+          "refId": "RDS_ReplicaLag",
+          "region": "ap-northeast-2",
+          "stat": "Maximum",
+          "statistic": "Maximum"
+        }
+      ],
+      "title": "RDS Replica Lag (s)",
+      "type": "gauge"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CloudWatch"
+      },
+      "description": "",
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "mappings": [],
+          "thresholds": {
+            "mode": "absolute",
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 80
+              }
+            ]
+          }
+        },
+        "overrides": []
+      },
+      "gridPos": {
+        "h": 7,
+        "w": 7,
+        "x": 6,
+        "y": 14
+      },
+      "id": 15,
+      "options": {
+        "colorMode": "value",
+        "graphMode": "area",
+        "justifyMode": "auto",
+        "orientation": "auto",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "",
+          "values": false
+        },
+        "showPercentChange": false,
+        "textMode": "auto",
+        "wideLayout": true
+      },
+      "pluginVersion": "10.4.0",
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CloudWatch"
+          },
+          "dimensions": {
+            "NatGatewayId": "*"
+          },
+          "expression": "",
+          "id": "",
+          "label": "",
+          "matchExact": false,
+          "metricEditorMode": 0,
+          "metricName": "ConnectionAttemptCount",
+          "metricQueryType": 0,
+          "namespace": "AWS/NATGateway",
+          "period": "auto",
+          "queryMode": "Metrics",
+          "refId": "NATGateway",
+          "region": "ap-northeast-2",
+          "stat": "Maximum",
+          "statistic": "Average"
+        }
+      ],
+      "title": "NATGateway_유입량",
+      "type": "stat"
+    },
+    {
       "datasource": {
         "type": "cloudwatch",
         "uid": "CloudWatch"
       },
       "gridPos": {
-        "h": 4,
-        "w": 13,
-        "x": 11,
-        "y": 13
+        "h": 5,
+        "w": 11,
+        "x": 13,
+        "y": 17
       },
       "id": 11,
       "options": {
@@ -389,13 +620,14 @@
       "type": "logs"
     }
   ],
+  "refresh": "1m",
   "schemaVersion": 39,
   "tags": [],
   "templating": {
     "list": []
   },
   "time": {
-    "from": "now-6h",
+    "from": "now-3h",
     "to": "now"
   },
   "timepicker": {},
