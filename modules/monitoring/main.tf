@@ -68,7 +68,7 @@ resource "aws_sns_topic_subscription" "email" {
 resource "aws_cloudwatch_log_metric_filter" "lambda_mail_fail" {
   name           = "lambda-mail-fail"
   log_group_name = "/aws/lambda/news-lambda-handler"
-  pattern        = "MAIL_SEND_FAIL"
+  pattern        = "[메일 전송 실패]"
 
   metric_transformation {
     name      = "MailSendFail"
@@ -78,7 +78,7 @@ resource "aws_cloudwatch_log_metric_filter" "lambda_mail_fail" {
 }
 
 # --------------------
-# CloudWatch Metric Alarm - MAIL_SEND_FAIL 알람
+# CloudWatch Metric Alarm - 메일 전송 실패 알람
 # --------------------
 resource "aws_cloudwatch_metric_alarm" "mail_fail_alarm" {
   alarm_name          = "MailSendFailAlarm"
@@ -89,7 +89,39 @@ resource "aws_cloudwatch_metric_alarm" "mail_fail_alarm" {
   period              = 300
   statistic           = "Sum"
   threshold           = 1
-  alarm_description   = "MAIL_SEND_FAIL 로그가 감지됨"
+  alarm_description   = "메일 전송 실패 로그가 감지됨"
+  actions_enabled     = true
+  alarm_actions       = [aws_sns_topic.monitoring_alerts.arn]
+}
+
+# --------------------
+# CloudWatch Log Metric Filter - 메일 전송 성공 감지
+# --------------------
+resource "aws_cloudwatch_log_metric_filter" "lambda_mail_success" {
+  name           = "lambda-mail-success"
+  log_group_name = "/aws/lambda/news-lambda-handler"
+  pattern        = "[메일 전송 성공]"
+
+  metric_transformation {
+    name      = "MailSendSuccess"
+    namespace = "Lambda/Mail"
+    value     = "1"
+  }
+}
+
+# --------------------
+# CloudWatch Metric Alarm - 메일 전송 성공 알람
+# --------------------
+resource "aws_cloudwatch_metric_alarm" "mail_success_alarm" {
+  alarm_name          = "MailSendSuccessAlarm"
+  comparison_operator = "GreaterThanOrEqualToThreshold"
+  evaluation_periods  = 1
+  metric_name         = aws_cloudwatch_log_metric_filter.lambda_mail_success.metric_transformation[0].name
+  namespace           = aws_cloudwatch_log_metric_filter.lambda_mail_success.metric_transformation[0].namespace
+  period              = 300
+  statistic           = "Sum"
+  threshold           = 1
+  alarm_description   = "메일 전송 성공 로그가 감지됨"
   actions_enabled     = true
   alarm_actions       = [aws_sns_topic.monitoring_alerts.arn]
 }
