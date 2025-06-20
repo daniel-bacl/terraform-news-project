@@ -161,8 +161,20 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
 # --------------------
 locals {
-  lambda_fail_query    = "fields @timestamp, @message | filter @message like /Fail/ | sort @timestamp desc | limit 20"
-  lambda_success_query = "fields @timestamp, @message | filter @message like /Success/ | sort @timestamp desc | limit 20"
+  lambda_fail_query = jsonencode(<<EOF
+fields @timestamp, @message
+| filter @message like /FAIL/
+| sort @timestamp desc
+| limit 20
+EOF
+  )
+  lambda_success_query = jsonencode(<<EOF
+fields @timestamp, @message
+| filter @message like /SUCCESS/
+| sort @timestamp desc
+| limit 20
+EOF
+  )
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
