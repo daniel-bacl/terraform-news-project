@@ -72,7 +72,26 @@ dashboards:
                   "period": auto,
                   "refId": "RDS_CPU"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 80, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "gauge",
@@ -88,7 +107,26 @@ dashboards:
                   "period": auto,
                   "refId": "RDS_Conn"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1000, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "datasource": {
@@ -144,8 +182,30 @@ dashboards:
                   "statsGroups": []
                 }
               ],
+<<<<<<< HEAD
               "title": "메일 전송 성공",
               "type": "logs"
+=======
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+>>>>>>> 25d4c542d8cd62adf07cc16a4bf7643903fc10ef
             },
             {
               "datasource": {
@@ -201,8 +261,30 @@ dashboards:
                   "statsGroups": []
                 }
               ],
+<<<<<<< HEAD
               "title": "메일 전송 실패",
               "type": "logs"
+=======
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+>>>>>>> 25d4c542d8cd62adf07cc16a4bf7643903fc10ef
             },
             {
               "type": "stat",
@@ -218,7 +300,26 @@ dashboards:
                   "period": 60,
                   "refId": "LambdaErr_crawler"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "logs",
@@ -230,7 +331,26 @@ dashboards:
                   "refId": "CrawlOK",
                   "region": "ap-northeast-2"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             },
             {
               "type": "logs",
@@ -242,10 +362,30 @@ dashboards:
                   "refId": "CrawlDel",
                   "region": "ap-northeast-2"
                 }
-              ]
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
             }
           ]
         }
+
     kubelet-dashboard:
       json: |
         ${kubelet_json}
