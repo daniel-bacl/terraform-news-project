@@ -42,7 +42,7 @@ dashboards:
           "time": { "from": "now-6h", "to": "now" },
           "panels": [
             {
-              "type": "timeseries",
+              "type": "gauge",
               "title": "RDS Replica Lag (s)",
               "description": "RDS ReplicaLag은 장애 발생 시에만 표시됩니다.",
               "datasource": "CloudWatch",
@@ -53,13 +53,13 @@ dashboards:
                   "dimensions": { "DBInstanceIdentifier": "news-rds" },
                   "region": "ap-northeast-2",
                   "stat": "Maximum",
-                  "period": 60,
+                  "period": auto,
                   "refId": "RDS_ReplicaLag"
                 }
               ]
             },
             {
-              "type": "stat",
+              "type": "timeseries",
               "title": "RDS CPUUtilization (%)",
               "datasource": "CloudWatch",
               "targets": [
@@ -69,13 +69,13 @@ dashboards:
                   "dimensions": { "DBInstanceIdentifier": "news-rds" },
                   "region": "ap-northeast-2",
                   "stat": "Average",
-                  "period": 60,
+                  "period": auto,
                   "refId": "RDS_CPU"
                 }
               ]
             },
             {
-              "type": "stat",
+              "type": "gauge",
               "title": "RDS DatabaseConnections",
               "datasource": "CloudWatch",
               "targets": [
@@ -85,34 +85,124 @@ dashboards:
                   "dimensions": { "DBInstanceIdentifier": "news-rds" },
                   "region": "ap-northeast-2",
                   "stat": "Average",
-                  "period": 60,
+                  "period": auto,
                   "refId": "RDS_Conn"
                 }
               ]
             },
             {
-              "type": "stat",
-              "title": "메일 전송 성공",
-              "datasource": "CloudWatch",
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CloudWatch"
+              },
+              "gridPos": {
+                "h": 5,
+                "w": 13,
+                "x": 10,
+                "y": 0
+              },
+              "id": 4,
+              "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": false,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+              },
+              "pluginVersion": "10.4.0",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} 메일 전송 성공', 'Count', 60)",
+                  "datasource": {
+                    "type": "cloudwatch",
+                    "uid": "CloudWatch"
+                  },
+                  "dimensions": {},
+                  "expression": "fields @timestamp, @message\n| filter @message like /Success/\n| sort @timestamp desc\n| limit 20\n",
+                  "id": "",
+                  "label": "",
+                  "logGroups": [
+                    {
+                      "accountId": "635140758252",
+                      "arn": "arn:aws:logs:ap-northeast-2:635140758252:log-group:/aws/lambda/news-lambda-handler:*",
+                      "name": "/aws/lambda/news-lambda-handler"
+                    }
+                  ],
+                  "matchExact": true,
+                  "metricEditorMode": 0,
+                  "metricName": "",
+                  "metricQueryType": 0,
+                  "namespace": "",
+                  "period": "",
+                  "queryMode": "Logs",
                   "refId": "MailOK_sending",
-                  "region": "ap-northeast-2"
+                  "region": "ap-northeast-2",
+                  "sqlExpression": "",
+                  "statistic": "Average",
+                  "statsGroups": []
                 }
-              ]
+              ],
+              "title": "메일 전송 성공",
+              "type": "logs"
             },
             {
-              "type": "stat",
-              "title": "메일 전송 실패",
-              "datasource": "CloudWatch",
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CloudWatch"
+              },
+              "gridPos": {
+                "h": 3,
+                "w": 13,
+                "x": 10,
+                "y": 5
+              },
+              "id": 5,
+              "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": false,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false
+              },
+              "pluginVersion": "10.4.0",
               "targets": [
                 {
-                  "expression": "SEARCH('{/aws/lambda/news-lambda-handler} 메일 전송 실패', 'Count', 60)",
+                  "datasource": {
+                    "type": "cloudwatch",
+                    "uid": "CloudWatch"
+                  },
+                  "dimensions": {},
+                  "expression": "fields @timestamp, @message\n| filter @message like /fail/\n| sort @timestamp desc\n| limit 20\n",
+                  "id": "",
+                  "label": "",
+                  "logGroups": [
+                    {
+                      "accountId": "635140758252",
+                      "arn": "arn:aws:logs:ap-northeast-2:635140758252:log-group:/aws/lambda/news-lambda-handler:*",
+                      "name": "/aws/lambda/news-lambda-handler"
+                    }
+                  ],
+                  "matchExact": true,
+                  "metricEditorMode": 0,
+                  "metricName": "",
+                  "metricQueryType": 0,
+                  "namespace": "",
+                  "period": "",
+                  "queryMode": "Logs",
                   "refId": "MailErr_sending",
-                  "region": "ap-northeast-2"
+                  "region": "ap-northeast-2",
+                  "sqlExpression": "",
+                  "statistic": "Average",
+                  "statsGroups": []
                 }
-              ]
+              ],
+              "title": "메일 전송 실패",
+              "type": "logs"
             },
             {
               "type": "stat",
@@ -131,7 +221,7 @@ dashboards:
               ]
             },
             {
-              "type": "stat",
+              "type": "logs",
               "title": "크롤링 성공",
               "datasource": "CloudWatch",
               "targets": [
@@ -143,7 +233,7 @@ dashboards:
               ]
             },
             {
-              "type": "stat",
+              "type": "logs",
               "title": "크롤링 삭제",
               "datasource": "CloudWatch",
               "targets": [
