@@ -61,6 +61,12 @@ resource "aws_iam_role_policy_attachment" "grafana_attach" {
   policy_arn = aws_iam_policy.grafana_cloudwatch.arn
 }
 
+resource "kubernetes_namespace" "monitoring" {
+  metadata {
+    name = var.grafana_service_account_namespace
+  }
+}
+
 # Grafana ServiceAccount (Helm과 연동하려면 이 이름 지정 필요)
 resource "kubernetes_service_account" "grafana" {
   provider = kubernetes
@@ -72,4 +78,6 @@ resource "kubernetes_service_account" "grafana" {
       "eks.amazonaws.com/role-arn" = aws_iam_role.grafana_irsa.arn
     }
   }
+
+  depends_on = [kubernetes_namespace.monitoring]
 }
