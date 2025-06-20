@@ -157,24 +157,12 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
 # CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
 # --------------------
 locals {
-  lambda_fail_query = jsonencode(<<EOF
-fields @timestamp, @message
-| filter @message like /FAIL/
-| sort @timestamp desc
-| limit 20
-EOF
-  )
-  lambda_success_query = jsonencode(<<EOF
-fields @timestamp, @message
-| filter @message like /SUCCESS/
-| sort @timestamp desc
-| limit 20
-EOF
-  )
+  lambda_fail_query    = "fields @timestamp, @message | filter @message like /Fail/ | sort @timestamp desc | limit 20"
+  lambda_success_query = "fields @timestamp, @message | filter @message like /Success/ | sort @timestamp desc | limit 20"
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "main-monitoring-test"
+  dashboard_name = "main-monitoring"
   dashboard_body = templatefile("${path.module}/dashboard_body.json.tmpl", {
     rds_instance_id      = var.rds_instance_id,
     region               = var.region,
@@ -183,11 +171,5 @@ resource "aws_cloudwatch_dashboard" "main" {
   })
 }
 
-output "debug_lambda_success_query" {
-  value = local.lambda_success_query
-}
-output "debug_lambda_fail_query" {
-  value = local.lambda_fail_query
-}
 
 
