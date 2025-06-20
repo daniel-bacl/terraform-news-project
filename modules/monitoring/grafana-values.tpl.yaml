@@ -1,4 +1,5 @@
-# CloudWatch + Prometheus Datasource 정의
+
+# CloudWatch Datasource 정의 추가
 datasources:
   datasources.yaml:
     apiVersion: 1
