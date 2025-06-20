@@ -166,7 +166,7 @@ locals {
 }
 
 resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "main-monitoring"
+  dashboard_name = "main-monitoring-test"
   dashboard_body = templatefile("${path.module}/dashboard_body.json.tmpl", {
     rds_instance_id      = var.rds_instance_id,
     region               = var.region,
@@ -174,4 +174,12 @@ resource "aws_cloudwatch_dashboard" "main" {
     lambda_success_query = jsonencode(local.lambda_success_query)
   })
 }
+
+output "debug_lambda_success_query" {
+  value = local.lambda_success_query
+}
+output "debug_lambda_fail_query" {
+  value = local.lambda_fail_query
+}
+
 
