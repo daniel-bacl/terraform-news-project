@@ -3,16 +3,12 @@
 # --------------------
 
 locals {
+  cloudWatch_dashboard_json        = jsonencode(jsondecode(file("${path.module}/grafana_dashboard/cloudwatch.json")))
   kubelet_dashboard_json = jsonencode(jsondecode(file("${path.module}/grafana_dashboard/kubelet.json")))
 
   grafana_values = templatefile("${path.module}/grafana-values.tpl.yaml", {
-    region = var.region
-    rds    = var.rds_instance_id
-    lambdas = {
-      sending_news = var.lambda_function_names["sending_news"]
-      crawler      = var.lambda_function_names["crawler"]
-    }
     kubelet_json = local.kubelet_dashboard_json
+    cloudwatch_json = local.cloudWatch_dashboard_json
   })
 }
 
