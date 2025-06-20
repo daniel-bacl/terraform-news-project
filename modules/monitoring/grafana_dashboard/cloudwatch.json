@@ -262,48 +262,146 @@
         "overrides": []
       }
     },
-    {
-      "type": "stat",
-      "title": "Lambda Errors - crawler",
-      "datasource": "CloudWatch",
+        {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CloudWatch"
+      },
+      "gridPos": {
+        "h": 5,
+        "w": 13,
+        "x": 11,
+        "y": 8
+      },
+      "id": 10,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "Numeric Fields",
+          "values": false
+        },
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
       "targets": [
         {
-          "metricName": "Errors",
-          "namespace": "AWS/Lambda",
-          "dimensions": { "FunctionName": "news-crawler-lambda" },
-          "region": "ap-northeast-2",
-          "stat": "Sum",
-          "statistic": "Sum",
-          "period": 60,
-          "refId": "LambdaErr_crawler",
-          "queryMode": "Metrics",
-          "matchExact": false,
-          "expression": "",
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CloudWatch"
+          },
+          "dimensions": {},
+          "expression": "fields @timestamp, @message\n| filter @message like /Crawling completed/\n| sort @timestamp desc\n| limit 20\n",
           "id": "",
           "label": "",
+          "logGroups": [
+            {
+              "accountId": "635140758252",
+              "arn": "arn:aws:logs:ap-northeast-2:635140758252:log-group:/aws/lambda/news-crawler-lambda:*",
+              "name": "/aws/lambda/news-crawler-lambda"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
           "metricQueryType": 0,
-          "metricEditorMode": 0
+          "namespace": "",
+          "period": "",
+          "queryMode": "Logs",
+          "refId": "CrawlOK",
+          "region": "ap-northeast-2",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": []
         }
       ],
-      "options": {
-        "reduceOptions": {
-          "values": false,
-          "calcs": ["lastNotNull"],
-          "fields": "Numeric Fields"
-        }
+      "title": "크롤링 성공",
+      "type": "logs"
+    },
+    {
+      "datasource": {
+        "type": "cloudwatch",
+        "uid": "CloudWatch"
       },
-      "fieldConfig": {
-        "defaults": {
-          "thresholds": {
-            "mode": "absolute",
-            "steps": [
-              { "value": null, "color": "green" },
-              { "value": 1, "color": "red" }
-            ]
-          }
+      "gridPos": {
+        "h": 4,
+        "w": 13,
+        "x": 11,
+        "y": 13
+      },
+      "id": 11,
+      "options": {
+        "dedupStrategy": "none",
+        "enableLogDetails": true,
+        "prettifyLogMessage": false,
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ],
+          "fields": "Numeric Fields",
+          "values": false
         },
-        "overrides": []
-      }
+        "showCommonLabels": false,
+        "showLabels": false,
+        "showTime": false,
+        "sortOrder": "Descending",
+        "wrapLogMessage": false
+      },
+      "targets": [
+        {
+          "datasource": {
+            "type": "cloudwatch",
+            "uid": "CloudWatch"
+          },
+          "dimensions": {},
+          "expression": "fields @timestamp, @message\n| filter @message like /뉴스 삭제 시작/\n| sort @timestamp desc\n| limit 20",
+          "id": "",
+          "label": "",
+          "logGroups": [
+            {
+              "accountId": "635140758252",
+              "arn": "arn:aws:logs:ap-northeast-2:635140758252:log-group:/aws/lambda/news-crawler-lambda:*",
+              "name": "/aws/lambda/news-crawler-lambda"
+            }
+          ],
+          "matchExact": true,
+          "metricEditorMode": 0,
+          "metricName": "",
+          "metricQueryType": 0,
+          "namespace": "",
+          "period": "",
+          "queryMode": "Logs",
+          "refId": "CrawlDel",
+          "region": "ap-northeast-2",
+          "sqlExpression": "",
+          "statistic": "Average",
+          "statsGroups": []
+        }
+      ],
+      "title": "크롤링 삭제",
+      "type": "logs"
     }
-  ]
+  ],
+  "schemaVersion": 39,
+  "tags": [],
+  "templating": {
+    "list": []
+  },
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "timezone": "",
+  "title": "NewsSubscribe Monitoring Dashboard",
+  "uid": "news-subscribe-dashboard",
+  "version": 1,
+  "weekStart": ""
 }
