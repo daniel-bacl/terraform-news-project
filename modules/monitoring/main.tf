@@ -30,22 +30,32 @@ resource "helm_release" "grafana" {
 
   set = [
     {
-    name  = "adminPassword"
-    value = var.grafana_admin_password
+      name  = "adminPassword"
+      value = var.grafana_admin_password
     },
     {
-    name  = "service.type"
-    value = "ClusterIP"
+      name  = "service.type"
+      value = "ClusterIP"
     },
     {
-    name  = "serviceAccount.name"
-    value = var.grafana_service_account_name
+      name  = "serviceAccount.name"
+      value = kubernetes_service_account.grafana.metadata[0].name
     },
     {
-    name  = "serviceAccount.create"
-    value = "false"
+      name  = "serviceAccount.create"
+      value = "false"
+    },
+    {
+      name  = "rbac.create"
+      value = "true"
+    },
+    {
+      name  = "datasources.datasource.yaml.apiVersion"
+      value = "1"
     }
   ]
+
+  depends_on = [kubernetes_namespace.monitoring]
 }
 
 # --------------------
