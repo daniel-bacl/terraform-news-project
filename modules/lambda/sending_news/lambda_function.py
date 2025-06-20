@@ -98,7 +98,7 @@ def send_via_ses(email: str, news_by_keyword: dict, date_str: str):
     body_lines.append("감사합니다.")
     body_text = "\n".join(body_lines)
 
-    logger.info(f"[메일 전송 시도] 대상={email}, 제목={subject}")
+    logger.info(f"[Mail Send Try] 대상={email}, 제목={subject}")
 
     response = ses.send_email(
         Source=SES_SENDER,
@@ -111,7 +111,7 @@ def send_via_ses(email: str, news_by_keyword: dict, date_str: str):
         }
     )
 
-    logger.info(f"[메일 전송 성공] 대상={email}, SES 응답={response['MessageId']}")
+    logger.info(f"[Mail Send Success] 대상={email}, SES 응답={response['MessageId']}")
 
 
 # ----------------------------------------------------------------------
@@ -183,7 +183,7 @@ def lambda_handler(event, context):
             for hid in hids:
                 update_history(hid, St.SUCCESS)
         except Exception as e:
-            logger.error(f"[메일 전송 실패] 대상={email}, 에러={e}")
+            logger.error(f"[Mail Send Fail] 대상={email}, 에러={e}")
             logger.error(traceback.format_exc())
             for hid in hids:
                 update_history(hid, St.FAIL)
