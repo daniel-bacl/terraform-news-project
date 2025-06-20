@@ -1,0 +1,339 @@
+{
+          "uid": "news-subscribe-dashboard",
+          "title": "NewsSubscribe Monitoring Dashboard",
+          "time": { "from": "now-6h", "to": "now" },
+          "panels": [
+            {
+              "type": "gauge",
+              "title": "RDS Replica Lag (s)",
+              "description": "RDS ReplicaLag은 장애 발생 시에만 표시됩니다.",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "metricName": "ReplicaLag",
+                  "namespace": "AWS/RDS",
+                  "dimensions": { "DBInstanceIdentifier": "news-rds" },
+                  "region": "ap-northeast-2",
+                  "stat": "Maximum",
+                  "period": "auto",
+                  "refId": "RDS_ReplicaLag"
+                }
+              ]
+            },
+            {
+              "type": "timeseries",
+              "title": "RDS CPUUtilization (%)",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "metricName": "CPUUtilization",
+                  "namespace": "AWS/RDS",
+                  "dimensions": { "DBInstanceIdentifier": "news-rds" },
+                  "region": "ap-northeast-2",
+                  "stat": "Average",
+                  "period": "auto",
+                  "refId": "RDS_CPU"
+                }
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 80, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            },
+            {
+              "type": "gauge",
+              "title": "RDS DatabaseConnections",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "metricName": "DatabaseConnections",
+                  "namespace": "AWS/RDS",
+                  "dimensions": { "DBInstanceIdentifier": "news-rds" },
+                  "region": "ap-northeast-2",
+                  "stat": "Average",
+                  "period": "auto",
+                  "refId": "RDS_Conn"
+                }
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1000, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            },
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CloudWatch"
+              },
+              "gridPos": {
+                "h": 5,
+                "w": 13,
+                "x": 10,
+                "y": 0
+              },
+              "id": 4,
+              "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": false,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false,
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "pluginVersion": "10.4.0",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "cloudwatch",
+                    "uid": "CloudWatch"
+                  },
+                  "dimensions": {},
+                  "expression": "fields @timestamp, @message\n| filter @message like /Success/\n| sort @timestamp desc\n| limit 20\n",
+                  "id": "",
+                  "label": "",
+                  "logGroups": [
+                    {
+                      "accountId": "635140758252",
+                      "arn": "arn:aws:logs:ap-northeast-2:635140758252:log-group:/aws/lambda/news-lambda-handler:*",
+                      "name": "/aws/lambda/news-lambda-handler"
+                    }
+                  ],
+                  "matchExact": true,
+                  "metricEditorMode": 0,
+                  "metricName": "",
+                  "metricQueryType": 0,
+                  "namespace": "",
+                  "period": "",
+                  "queryMode": "Logs",
+                  "refId": "MailOK_sending",
+                  "region": "ap-northeast-2",
+                  "sqlExpression": "",
+                  "statistic": "Average",
+                  "statsGroups": []
+                }
+              ],
+              "title": "메일 전송 성공",
+              "type": "logs",
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            },
+            {
+              "datasource": {
+                "type": "cloudwatch",
+                "uid": "CloudWatch"
+              },
+              "gridPos": {
+                "h": 3,
+                "w": 13,
+                "x": 10,
+                "y": 5
+              },
+              "id": 5,
+              "options": {
+                "dedupStrategy": "none",
+                "enableLogDetails": true,
+                "prettifyLogMessage": false,
+                "showCommonLabels": false,
+                "showLabels": false,
+                "showTime": false,
+                "sortOrder": "Descending",
+                "wrapLogMessage": false,
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "pluginVersion": "10.4.0",
+              "targets": [
+                {
+                  "datasource": {
+                    "type": "cloudwatch",
+                    "uid": "CloudWatch"
+                  },
+                  "dimensions": {},
+                  "expression": "fields @timestamp, @message\n| filter @message like /fail/\n| sort @timestamp desc\n| limit 20\n",
+                  "id": "",
+                  "label": "",
+                  "logGroups": [
+                    {
+                      "accountId": "635140758252",
+                      "arn": "arn:aws:logs:ap-northeast-2:635140758252:log-group:/aws/lambda/news-lambda-handler:*",
+                      "name": "/aws/lambda/news-lambda-handler"
+                    }
+                  ],
+                  "matchExact": true,
+                  "metricEditorMode": 0,
+                  "metricName": "",
+                  "metricQueryType": 0,
+                  "namespace": "",
+                  "period": "",
+                  "queryMode": "Logs",
+                  "refId": "MailErr_sending",
+                  "region": "ap-northeast-2",
+                  "sqlExpression": "",
+                  "statistic": "Average",
+                  "statsGroups": []
+                }
+              ],
+              "title": "메일 전송 실패",
+              "type": "logs",
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            },
+            {
+              "type": "stat",
+              "title": "Lambda Errors - crawler",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "metricName": "Errors",
+                  "namespace": "AWS/Lambda",
+                  "dimensions": { "FunctionName": "news-crawler-lambda" },
+                  "region": "ap-northeast-2",
+                  "stat": "Sum",
+                  "period": 60,
+                  "refId": "LambdaErr_crawler"
+                }
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            },
+            {
+              "type": "logs",
+              "title": "크롤링 성공",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} 크롤링 성공', 'Count', 60)",
+                  "refId": "CrawlOK",
+                  "region": "ap-northeast-2"
+                }
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            },
+            {
+              "type": "logs",
+              "title": "크롤링 삭제",
+              "datasource": "CloudWatch",
+              "targets": [
+                {
+                  "expression": "SEARCH('{/aws/lambda/news-crawler-lambda} 크롤링 삭제', 'Count', 60)",
+                  "refId": "CrawlDel",
+                  "region": "ap-northeast-2"
+                }
+              ],
+              "options": {
+                "reduceOptions": {
+                  "values": false,
+                  "calcs": ["lastNotNull"],
+                  "fields": "Numeric Fields"
+                }
+              },
+              "fieldConfig": {
+                "defaults": {
+                  "thresholds": {
+                    "mode": "absolute",
+                    "steps": [
+                      { "value": null, "color": "green" },
+                      { "value": 1, "color": "red" }
+                    ]
+                  }
+                },
+                "overrides": []
+              }
+            }
+          ]
+        }
