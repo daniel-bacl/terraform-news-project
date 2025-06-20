@@ -23,9 +23,9 @@
       "width": 8,
       "height": 6,
       "properties": {
-        "query": "${lambda_fail_query}",
+        "query": ${lambda_fail_query},
         "region": "${region}",
-        "title": "Lambda: 메일 전송 실패 로그",
+        "title": "Lambda: Mail Send Fail",
         "logGroupNames": ["/aws/lambda/news-lambda-handler"],
         "view": "table",
         "stacked": false
@@ -38,9 +38,9 @@
       "width": 8,
       "height": 6,
       "properties": {
-        "query": "${lambda_success_query}",
+        "query": ${lambda_success_query},
         "region": "${region}",
-        "title": "Lambda: 메일 전송 성공 로그",
+        "title": "Lambda: Mail Send Success",
         "logGroupNames": ["/aws/lambda/news-lambda-handler"],
         "view": "table",
         "stacked": false
@@ -48,3 +48,4 @@
     }
   ]
 }
+
