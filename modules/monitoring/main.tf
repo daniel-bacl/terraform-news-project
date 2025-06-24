@@ -101,37 +101,6 @@ resource "aws_cloudwatch_metric_alarm" "mail_fail_alarm" {
   alarm_actions       = [aws_sns_topic.monitoring_alerts.arn]
 }
 
-# --------------------
-# CloudWatch Log Metric Filter - Mail Send Success 감지
-# --------------------
-resource "aws_cloudwatch_log_metric_filter" "lambda_mail_success" {
-  name           = "lambda-mail-success"
-  log_group_name = "/aws/lambda/news-lambda-handler"
-  pattern        = "Mail Send Success"
-
-  metric_transformation {
-    name      = "MailSendSuccess"
-    namespace = "Lambda/Mail"
-    value     = "1"
-  }
-}
-
-# --------------------
-# CloudWatch Metric Alarm - Mail Send Success 알람
-# --------------------
-resource "aws_cloudwatch_metric_alarm" "mail_success_alarm" {
-  alarm_name          = "MailSendSuccessAlarm"
-  comparison_operator = "GreaterThanOrEqualToThreshold"
-  evaluation_periods  = 1
-  metric_name         = aws_cloudwatch_log_metric_filter.lambda_mail_success.metric_transformation[0].name
-  namespace           = aws_cloudwatch_log_metric_filter.lambda_mail_success.metric_transformation[0].namespace
-  period              = 300
-  statistic           = "Sum"
-  threshold           = 1
-  alarm_description   = "Mail Send Success 로그가 감지됨"
-  actions_enabled     = true
-  alarm_actions       = [aws_sns_topic.monitoring_alerts.arn]
-}
 
 # --------------------
 # RDS CPU 사용률 알람
@@ -152,24 +121,4 @@ resource "aws_cloudwatch_metric_alarm" "rds_cpu_high" {
     DBInstanceIdentifier = var.rds_instance_id
   }
 }
-
-# --------------------
-# CloudWatch Dashboard (RDS CPU + Lambda 로그 쿼리)
-# --------------------
-locals {
-  lambda_fail_query    = "fields @timestamp, @message | filter @message like /Fail/ | sort @timestamp desc | limit 20"
-  lambda_success_query = "fields @timestamp, @message | filter @message like /Success/ | sort @timestamp desc | limit 20"
-}
-
-resource "aws_cloudwatch_dashboard" "main" {
-  dashboard_name = "main-monitoring"
-  dashboard_body = templatefile("${path.module}/dashboard_body.json.tmpl", {
-    rds_instance_id      = var.rds_instance_id,
-    region               = var.region,
-    lambda_fail_query    = jsonencode(local.lambda_fail_query),
-    lambda_success_query = jsonencode(local.lambda_success_query)
-  })
-}
-
-
 

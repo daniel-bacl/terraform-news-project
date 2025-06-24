@@ -3,7 +3,7 @@
 CREATE TABLE users (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     email VARCHAR(255) NOT NULL UNIQUE,
-    auth_code VARCHAR(8), 
+    auth_code CHAR(8), 
     send_hour VARCHAR(2),
     created_at DATETIME DEFAULT CURRENT_TIMESTAMP
 );
