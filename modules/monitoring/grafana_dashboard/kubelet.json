@@ -235,16 +235,16 @@
           "datasource": {
             "uid": "$datasource"
           },
-          "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket{cluster=\"$cluster\",job=\"kubelet\", metrics_path=\"/metrics\", instance=~\"$instance\"}[$__rate_interval])) by (instance, verb, url, le))",
+          "expr": "histogram_quantile(0.99, sum(rate(rest_client_request_duration_seconds_bucket[2m])) by (le, instance))",
           "format": "time_series",
           "intervalFactor": 2,
-          "legendFormat": "{{instance}} {{verb}} {{url}}",
+          "legendFormat": "{{instance}}",
           "refId": "A"
         }
       ],
       "thresholds": [],
       "timeRegions": [],
-      "title": "Request duration 99th quantile",
+      "title": "Request duration 99th quantile [2m]",
       "tooltip": {
         "shared": true,
         "sort": 0,
