@@ -210,7 +210,7 @@
             "uid": "CloudWatch"
           },
           "dimensions": {},
-          "expression": "fields @timestamp, @message\n| filter @message like /fail/\n| sort @timestamp desc\n| limit 20\n",
+          "expression": "fields @timestamp, @message\n| filter @message like /Fail/\n| sort @timestamp desc\n| limit 20\n",
           "id": "",
           "label": "",
           "logGroups": [
